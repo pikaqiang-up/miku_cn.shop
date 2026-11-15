@@ -1,577 +1,401 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>初音未来.shop — 未来，非卖品</title>
-<meta name="description" content="既见未来，为何不buy？——因为不买，立省百分百。一个什么都不卖的概念域名。">
-<meta name="theme-color" content="#0b0f0f">
-<meta property="og:title" content="初音未来.shop — 未来，非卖品">
-<meta property="og:description" content="不买，立省百分百。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230b0f0f'/%3E%3Ctext%20x='32'%20y='45'%20font-family='monospace'%20font-size='32'%20font-weight='700'%20text-anchor='middle'%20fill='%2339c5bb'%3E39%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@600;700;900&family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0b0f0f;
-  --bg2:#0e1414;
-  --ink:#f2f5f3;
-  --dim:rgba(242,245,243,.58);
-  --faint:rgba(242,245,243,.34);
-  --teal:#39c5bb;
-  --teal-soft:rgba(57,197,187,.14);
-  --line:rgba(242,245,243,.14);
-  --f-d:"Noto Sans SC","Noto Sans CJK SC","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Microsoft YaHei",sans-serif;
-  --f-s:"Noto Serif SC","Noto Serif CJK SC","Source Han Serif SC","Songti SC","SimSun",serif;
-  --f-m:"Space Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-  --w:min(1180px,92vw);
-  --ease:cubic-bezier(.2,.7,.2,1);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;color-scheme:dark;scrollbar-width:thin;scrollbar-color:rgba(57,197,187,.4) transparent}
-body{
-  background:var(--bg);color:var(--ink);
-  font-family:var(--f-d);
-  overflow-x:clip;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-html::-webkit-scrollbar{width:10px}
-html::-webkit-scrollbar-thumb{background:rgba(57,197,187,.35);border-radius:8px}
-html::-webkit-scrollbar-track{background:transparent}
-::selection{background:var(--teal);color:#0b0f0f}
-:focus-visible{outline:1px solid var(--teal);outline-offset:4px}
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit}
-.mono{font-family:var(--f-m)}
-
-/* ── 展签外框 ─────────────────────────── */
-.frame{position:fixed;inset:12px;border:1px solid rgba(242,245,243,.10);pointer-events:none;z-index:990}
-.corner{position:fixed;font:400 12px/1 var(--f-m);color:var(--faint);z-index:991;pointer-events:none}
-.corner.tl{top:6px;left:7px}.corner.tr{top:6px;right:7px}
-.corner.bl{bottom:6px;left:7px}.corner.br{bottom:6px;right:7px}
-.chrome{position:fixed;z-index:992;font-family:var(--f-m);font-size:10px;letter-spacing:.28em;color:var(--faint);pointer-events:none;text-transform:uppercase}
-.chrome .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-left:8px;vertical-align:1px;animation:pulse 2.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.brand{top:24px;left:30px}
-.tag{top:24px;right:30px}
-.nonsale{bottom:24px;left:30px}
-.coords{bottom:46px;left:30px;letter-spacing:.14em}
-@supports selector(:has(*)){}
-.wm{
-  position:fixed;top:4vh;right:-7vw;z-index:0;pointer-events:none;user-select:none;
-  font-family:var(--f-d);font-weight:900;font-size:62vh;line-height:1;letter-spacing:-.05em;
-  color:transparent;-webkit-text-stroke:1px rgba(57,197,187,.10);
-}
-main,footer{position:relative;z-index:2}
-
-/* ── HERO ───────────────────────────── */
-.hero{
-  min-height:100vh;min-height:100svh;
-  display:flex;flex-direction:column;
-  padding:110px max(24px,calc((100% - var(--w)) / 2)) 88px;
-  position:relative;
-}
-.hero-meta{
-  display:flex;flex-wrap:wrap;gap:10px 0;
-  font-size:11px;letter-spacing:.24em;color:var(--dim);
-}
-.hero-meta span+span::before{content:"／";margin:0 16px;color:var(--faint)}
-.hero-main{margin-block:auto;max-width:var(--w)}
-.hero-title{
-  font-weight:900;
-  font-size:clamp(54px,11.5vw,170px);
-  line-height:1.06;letter-spacing:.015em;
-  margin-top:clamp(40px,8vh,96px);
-}
-.buy{
-  position:relative;display:inline-block;
-  font-family:"Instrument Serif",Georgia,"Times New Roman",serif;
-  font-style:italic;font-weight:400;text-transform:lowercase;
-  color:var(--teal);font-size:1.04em;line-height:1;
-  padding:0 .1em;margin-left:.06em;
-  cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:color .3s;
-}
-.buy::before{
-  content:"不";
-  position:absolute;top:-.34em;left:50%;transform:translate(-50%,6px);
-  font-family:var(--f-d);font-style:normal;font-weight:900;font-size:.17em;letter-spacing:.2em;
-  color:var(--teal);opacity:0;transition:.3s var(--ease);
-}
-.buy::after{
-  content:"";position:absolute;left:-.05em;right:-.05em;top:55%;height:.055em;
-  background:var(--ink);transform:scaleX(0);transform-origin:left;
-  transition:transform .5s cubic-bezier(.7,0,.2,1);
-}
-.buy:hover::before,.buy:focus-visible::before{opacity:1;transform:translate(-50%,0)}
-.buy:hover::after,.buy.struck::after,.buy:focus-visible::after{transform:scaleX(1)}
-.hero-qa{
-  margin-top:clamp(28px,5vh,52px);
-  font-size:12px;letter-spacing:.2em;color:var(--dim);
-}
-.hero-qa b{font-weight:400;color:var(--teal)}
-.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:32px}
-.hint{font-size:11px;letter-spacing:.22em;color:var(--faint)}
-.hint .arr{display:inline-block;color:var(--teal);margin-right:10px;animation:bob 2.2s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-/* 侧栏竖排 */
-.vtext{
-  position:absolute;right:max(20px,calc((100% - var(--w)) / 2 - 40px));top:44%;
-  writing-mode:vertical-rl;display:flex;gap:18px;
-  font-weight:900;font-size:clamp(20px,2.3vw,32px);letter-spacing:.4em;
-}
-.vtext .en{font-family:var(--f-m);font-weight:400;font-size:10px;letter-spacing:.5em;color:var(--teal)}
-/* 旋转徽章 */
-.badge{position:absolute;right:max(16px,calc((100% - var(--w)) / 2 - 30px));top:118px;width:118px;height:118px;animation:spin 28s linear infinite;opacity:.85}
-@keyframes spin{to{transform:rotate(360deg)}}
-.badge .bt{font-family:var(--f-m);font-size:9.5px;letter-spacing:.22em;fill:var(--faint)}
-.badge .bc{fill:none;stroke:rgba(57,197,187,.4);stroke-width:1}
-.badge .bp{stroke:var(--teal);stroke-width:1}
-/* 葱 */
-.leek-wrap{
-  background:none;border:0;cursor:pointer;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  -webkit-tap-highlight-color:transparent;
-}
-.leek{width:74px;height:auto;display:block;animation:sway 6s ease-in-out infinite alternate}
-@keyframes sway{from{transform:rotate(-2.4deg)}to{transform:rotate(2.4deg)}}
-.leek.wig{animation:wig .6s ease-in-out}
-@keyframes wig{
-  0%,100%{transform:rotate(0)}
-  20%{transform:rotate(-9deg) scale(1.04)}40%{transform:rotate(8deg)}
-  60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}
-}
-.leek .st{stroke:var(--ink)}.leek .lv{stroke:var(--teal)}
-.leek path{fill:none;stroke-width:2.5;stroke-linecap:round}
-.leek-cap{font-family:var(--f-m);font-size:10px;letter-spacing:.2em;color:var(--faint)}
-
-/* ── 跑马灯 ──────────────────────────── */
-.marquee{
-  width:104vw;margin-left:-2vw;overflow:hidden;
-  background:var(--teal);color:#0b0f0f;
-  transform:rotate(-1.4deg);
-  padding-block:16px;
-  box-shadow:0 0 0 1px rgba(11,15,15,.6);
-}
-.marquee .track{display:flex;width:max-content;animation:mq 30s linear infinite}
-.marquee:hover .track{animation-play-state:paused}
-.marquee span{
-  display:block;white-space:nowrap;
-  font-weight:900;font-size:clamp(17px,2.4vw,28px);letter-spacing:.08em;line-height:1;
-}
-@keyframes mq{to{transform:translateX(-50%)}}
-
-/* ── 通用区块 ────────────────────────── */
-.wrap{width:var(--w);margin-inline:auto}
-.sec{padding-block:clamp(96px,15vh,170px)}
-.sec-head{display:flex;align-items:center;gap:18px;font-family:var(--f-m);font-size:11px;letter-spacing:.3em;color:var(--faint)}
-.sec-head .no{color:var(--teal)}
-.sec-head .rule{flex:1;height:1px;background:var(--line)}
-.sec-title{
-  font-weight:900;font-size:clamp(32px,4.8vw,62px);line-height:1.2;letter-spacing:.02em;
-  margin-top:clamp(30px,5vh,58px);
-}
-.outline{color:transparent;-webkit-text-stroke:1.5px var(--ink)}
-
-/* 01 档案 */
-.specs{margin-top:clamp(44px,7vh,76px);border-top:1px solid var(--line)}
-.specs .row{
-  display:grid;grid-template-columns:170px 1fr;gap:24px;
-  padding:24px 0;border-bottom:1px solid var(--line);
-  position:relative;
-}
-.specs .row::before{
-  content:"";position:absolute;left:-16px;top:50%;
-  width:6px;height:6px;background:var(--teal);
-  transform:translateY(-50%) scale(0);transition:.3s var(--ease);
-}
-.specs .row:hover::before{transform:translateY(-50%) scale(1)}
-.specs dt{font-family:var(--f-m);font-size:11px;letter-spacing:.34em;color:var(--faint);padding-top:.7em}
-.specs dd{font-size:clamp(17px,2vw,24px);font-weight:700;line-height:1.6}
-.specs dd .n{
-  display:inline-block;margin-left:1.2em;
-  font-family:var(--f-m);font-weight:400;font-size:11px;letter-spacing:.16em;
-  color:var(--faint);vertical-align:.35em;
-}
-.specs .price dd{color:var(--teal)}
-.footnote{margin-top:26px;font-family:var(--f-m);font-size:11px;letter-spacing:.14em;line-height:2;color:var(--faint)}
-
-/* 02 宣言 */
-.mani{margin-top:clamp(30px,5vh,56px);list-style:none;border-top:1px solid var(--line)}
-.mani li{
-  display:grid;grid-template-columns:88px 1fr;align-items:baseline;gap:12px;
-  padding:clamp(30px,5vh,52px) 0;border-bottom:1px solid var(--line);
-}
-.mani .idx{font-family:var(--f-m);font-size:12px;letter-spacing:.2em;color:var(--teal)}
-.mani p{
-  font-family:var(--f-s);font-weight:900;
-  font-size:clamp(25px,4.2vw,52px);line-height:1.35;
-  transition:color .35s,transform .35s var(--ease);
-}
-.mani li:hover p{color:var(--teal);transform:translateX(12px)}
-
-/* 03 纪念碑 */
-.monument{text-align:center}
-.pct-wrap{position:relative;display:inline-block;margin-top:clamp(40px,7vh,72px)}
-.pct{
-  font-weight:900;font-size:clamp(110px,27vw,430px);line-height:.95;letter-spacing:-.02em;
-  background:linear-gradient(168deg,var(--ink) 8%,#a7ebe4 48%,var(--teal) 96%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.pct.pop{animation:pop .5s var(--ease)}
-@keyframes pop{40%{transform:scale(1.025)}}
-.chip{
-  position:absolute;top:6%;right:-14%;
-  font-family:var(--f-m);font-size:11px;letter-spacing:.3em;color:var(--teal);
-  border:1px solid var(--teal);padding:8px 14px;transform:rotate(9deg);
-}
-.pct-sub{margin-top:clamp(24px,4vh,40px);font-size:14px;letter-spacing:.12em;line-height:2.2;color:var(--dim)}
-.cta{margin-top:clamp(40px,7vh,72px);display:flex;flex-direction:column;align-items:center;gap:22px}
-.bigbtn{
-  position:relative;overflow:hidden;
-  background:transparent;border:1px solid var(--ink);
-  padding:22px 52px;cursor:pointer;
-  font-family:var(--f-m);font-weight:700;font-size:15px;letter-spacing:.26em;
-  transition:border-color .3s;-webkit-tap-highlight-color:transparent;
-}
-.bigbtn::before{
-  content:"";position:absolute;inset:0;background:var(--teal);
-  transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease);
-}
-.bigbtn span{position:relative;transition:color .3s}
-.bigbtn .ar{display:inline-block;margin-left:14px;transition:transform .3s var(--ease)}
-.bigbtn:hover::before,.bigbtn:focus-visible::before{transform:scaleX(1)}
-.bigbtn:hover span,.bigbtn:focus-visible span{color:#0b0f0f}
-.bigbtn:hover .ar,.bigbtn:focus-visible .ar{transform:translateX(6px)}
-.bigbtn:active{transform:scale(.98)}
-.counter{font-family:var(--f-m);font-size:11px;letter-spacing:.2em;color:var(--faint)}
-.counter b{font-weight:400;color:var(--teal)}
-
-/* ── 页脚 ───────────────────────────── */
-.foot{border-top:1px solid var(--line);padding-block:clamp(90px,13vh,150px) 72px}
-.domain{
-  font-weight:900;font-size:clamp(42px,8.6vw,136px);
-  letter-spacing:-.02em;line-height:1.1;margin-top:clamp(36px,6vh,64px);
-  word-break:break-all;
-}
-.domain .d{color:var(--teal)}
-.dom-sub{margin-top:18px;font-size:14px;letter-spacing:.14em;color:var(--dim)}
-.fgrid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:40px;
-  margin-top:clamp(52px,8vh,84px);
-  font-family:var(--f-m);font-size:11px;letter-spacing:.16em;line-height:2.1;color:var(--dim);
-}
-.fgrid b{display:block;font-weight:400;color:var(--teal);letter-spacing:.36em;margin-bottom:10px}
-.ps{margin-top:44px;font-family:var(--f-m);font-size:11px;letter-spacing:.14em;line-height:2;color:var(--faint)}
-.fbar{
-  display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
-  margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
-  font-family:var(--f-m);font-size:10px;letter-spacing:.16em;color:var(--faint);
-}
-.fbar a{transition:color .3s}
-.fbar a:hover{color:var(--teal)}
-
-/* ── Toast / 颗粒 ─────────────────────── */
-.toast{
-  position:fixed;left:50%;bottom:36px;z-index:999;
-  transform:translate(-50%,16px);opacity:0;pointer-events:none;
-  background:rgba(14,20,20,.92);border:1px solid var(--teal);
-  padding:14px 24px;font-size:12px;letter-spacing:.16em;color:var(--ink);
-  backdrop-filter:blur(8px);
-  transition:.35s var(--ease);
-  max-width:88vw;
-}
-.toast.on{opacity:1;transform:translate(-50%,0)}
-.grain{
-  position:fixed;inset:0;z-index:995;pointer-events:none;opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.82'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ── 入场动画 ────────────────────────── */
-html.js [data-rev]{
-  opacity:0;transform:translateY(26px);
-  transition:opacity .9s var(--ease),transform .9s var(--ease);
-  transition-delay:var(--d,0s);
-}
-html.js [data-rev].on{opacity:1;transform:none}
-
-/* ── 响应式 ─────────────────────────── */
-@media (max-width:920px){
-  .badge,.vtext,.coords,.tag{display:none}
-  .wm{font-size:52vw;top:12vh}
-  .specs .row{grid-template-columns:1fr;gap:8px;padding:20px 0}
-  .specs dt{padding-top:0}
-  .specs dd .n{display:block;margin:6px 0 0;vertical-align:baseline}
-  .fgrid{grid-template-columns:1fr;gap:28px}
-  .hero{padding-top:92px}
-  .chip{right:-4%}
-  .mani li{grid-template-columns:52px 1fr}
-}
-@media (max-width:560px){
-  .frame{inset:8px}
-  .corner{display:none}
-  .brand{top:18px;left:22px}
-  .nonsale{bottom:18px;left:22px}
-  .hero-foot{flex-direction:column;align-items:flex-start;gap:28px}
-  .leek-wrap{margin-left:auto;flex-direction:row;align-items:flex-end;gap:16px}
-  .leek{width:56px}
-  .marquee{transform:rotate(-1deg)}
-}
-
-/* ── 动效降级 ────────────────────────── */
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .marquee .track,.badge,.leek,.hint .arr,.chrome .dot{animation:none}
-  html.js [data-rev]{opacity:1;transform:none;transition:none}
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8fbfa">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="初音未来.shop —— 一处关于声音、想象与共同创作的非官方数字纪念空间。这里陈列着一段还没被唱完的声音。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://xn--7br062ccfl55p.shop/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="初音未来.shop">
+  <meta property="og:title" content="初音未来.shop｜让声音继续生长">
+  <meta property="og:description" content="这里陈列着一段还没被唱完的声音。从一个音符出发，穿过不同的创作，继续回响。">
+  <meta property="og:url" content="https://xn--7br062ccfl55p.shop/">
+  <meta property="og:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="初音未来.shop｜让声音继续生长">
+  <meta name="twitter:description" content="一处关于声音、想象与共同创作的非官方数字纪念空间。">
+  <meta name="twitter:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.png">
+  <title>初音未来.shop｜让声音继续生长</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <!-- 字体服务使用 display=swap；网络字体未及时到达时立即回退到系统字体。 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+  <script>document.documentElement.classList.add('js');</script>
+  <!-- 首屏关键样式：外部 CSS 到达前先稳定背景与标题，减少闪白。 -->
+  <style>
+    :root{--miku:#39c5bb;--paper:#f8fbfa;--ink:#1d302f;--font-display:"Manrope","Noto Sans SC","Noto Sans JP",Arial,sans-serif}
+    html{background:var(--paper)}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-display)}
+    .hero{min-height:100svh;background:linear-gradient(132deg,#edf8f6 0%,#f9fcfb 54%,#fbf7f9 100%)}
+    .hero-title{font-family:var(--font-display);font-weight:250;letter-spacing:.025em}
+  </style>
+  <link rel="preload" href="./src/style.css" as="style">
+  <link rel="stylesheet" href="./src/style.css">
+  <script type="module" src="./src/main.js"></script>
 </head>
-<body id="top">
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="reading-progress" aria-hidden="true"><span id="readingProgress"></span></div>
 
-<!-- 展签外框与固定信息 -->
-<div class="frame" aria-hidden="true"></div>
-<div class="corner tl" aria-hidden="true">+</div>
-<div class="corner tr" aria-hidden="true">+</div>
-<div class="corner bl" aria-hidden="true">+</div>
-<div class="corner br" aria-hidden="true">+</div>
-<div class="chrome brand">初音未来.shop<i class="dot" aria-hidden="true"></i></div>
-<div class="chrome tag">非卖品 NON-SALE</div>
-<div class="chrome nonsale">不买主义 CERTIFIED</div>
-<div class="chrome coords" id="coords" aria-hidden="true">X:0000 Y:0000</div>
-<div class="wm" aria-hidden="true">39</div>
-
-<main>
-  <!-- ─── HERO ─── -->
-  <header class="hero">
-    <div class="hero-meta mono" data-rev>
-      <span>概念域 N°39</span>
-      <span>一个什么都不卖的 .shop</span>
-      <span>展期：永久</span>
-      <span>门票：免费</span>
-    </div>
-
-    <div class="hero-main">
-      <h1 class="hero-title" data-rev style="--d:.08s">
-        既见未来，<br>
-        为何不<span class="buy" id="buy" title="点它也没用">buy</span>
-      </h1>
-      <p class="hero-qa mono" data-rev style="--d:.2s">
-        问：既然看见了未来，为什么不买？——<b>答：往下看。</b>
-      </p>
-    </div>
-
-    <div class="hero-foot">
-      <div class="hint mono" data-rev style="--d:.3s">
-        <span class="arr" aria-hidden="true">↓</span>没有商品，没有价格，只有态度
-      </div>
-      <button type="button" class="leek-wrap" data-rev style="--d:.4s" aria-label="葱：点一下，免费赠送">
-        <svg class="leek" viewBox="0 0 120 344" aria-hidden="true">
-          <g class="st">
-            <path d="M46 330 C 44 262 46 192 52 128"/>
-            <path d="M74 330 C 76 262 74 192 66 128"/>
-            <path d="M46 330 C 56 337 64 337 74 330"/>
-            <path d="M60 126 L 60 18" stroke-width="1.4" opacity=".32"/>
-            <path d="M47 254 L 73 254" stroke-width="1.4" opacity=".28"/>
-            <path d="M47 198 L 73 198" stroke-width="1.4" opacity=".28"/>
-            <path d="M50 331 L 44 341" stroke-width="1.4" opacity=".5"/>
-            <path d="M60 334 L 60 343" stroke-width="1.4" opacity=".5"/>
-            <path d="M70 331 L 76 341" stroke-width="1.4" opacity=".5"/>
-          </g>
-          <g class="lv">
-            <path d="M52 128 C 46 96 40 62 44 26"/>
-            <path d="M58 126 C 56 92 58 58 66 22"/>
-            <path d="M66 128 C 74 100 82 70 92 44"/>
-            <path d="M64 127 C 60 100 48 78 30 58"/>
-            <path d="M54 127 C 44 108 30 92 14 78"/>
-          </g>
-        </svg>
-        <span class="leek-cap">赠品：葱 ×1<br>（免费，已放入你的想象）</span>
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="初音未来.shop 首页">
+      <span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-word">初音未来<span>.shop</span></span>
+    </a>
+    <nav class="main-nav" id="mainNav" aria-label="主导航">
+      <a href="#about">序章</a>
+      <a href="#history">时间</a>
+      <a href="#creation">创作</a>
+      <a href="#lab">声场</a>
+      <a href="#message">留言</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="切换夜间模式" aria-pressed="false" title="切换明暗主题">
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.55 1.55m11.04 11.04 1.55 1.55M2 12h2.2m15.6 0H22M4.93 19.07l1.55-1.55M17.52 6.48l1.55-1.55"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.6 8.6 0 0 1 8.8 3.8 8.8 8.8 0 1 0 20.2 15.2Z"/></svg>
       </button>
-    </div>
-
-    <svg class="badge" viewBox="0 0 130 130" aria-hidden="true">
-      <defs><path id="cir" d="M65,65 m-51,0 a51,51 0 1,1 102,0 a51,51 0 1,1 -102,0"/></defs>
-      <circle class="bc" cx="65" cy="65" r="20"/>
-      <path class="bp" d="M60 65 h10 M65 60 v10"/>
-      <text class="bt"><textPath href="#cir">初音未来.shop · 不买主义 · NON-SHOP · EST.39 ·&#160;</textPath></text>
-    </svg>
-
-    <div class="vtext" aria-hidden="true">
-      <span>未来非卖品</span>
-      <span class="en">NOT FOR SALE</span>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span>
+      </button>
     </div>
   </header>
 
-  <!-- ─── 跑马灯 ─── -->
-  <div class="marquee" aria-hidden="true">
-    <div class="track">
-      <span>不买，立省百分百&ensp;✦&ensp;SAVE 100% BY NOT BUYING&ensp;✦&ensp;未来，非卖品&ensp;✦&ensp;NOT FOR SALE&ensp;✦&ensp;不买，立省百分百&ensp;✦&ensp;SAVE 100% BY NOT BUYING&ensp;✦&ensp;未来，非卖品&ensp;✦&ensp;NOT FOR SALE&ensp;✦&ensp;</span>
-      <span>不买，立省百分百&ensp;✦&ensp;SAVE 100% BY NOT BUYING&ensp;✦&ensp;未来，非卖品&ensp;✦&ensp;NOT FOR SALE&ensp;✦&ensp;不买，立省百分百&ensp;✦&ensp;SAVE 100% BY NOT BUYING&ensp;✦&ensp;未来，非卖品&ensp;✦&ensp;NOT FOR SALE&ensp;✦&ensp;</span>
-    </div>
-  </div>
+  <main id="main">
+    <svg class="site-spine" viewBox="0 0 1440 10000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="spineGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:var(--arc-start)" stop-opacity=".86"/>
+          <stop offset=".07" style="stop-color:var(--arc-mid)" stop-opacity=".68"/>
+          <stop offset=".18" style="stop-color:var(--arc-mid)" stop-opacity=".43"/>
+          <stop offset=".38" style="stop-color:var(--arc-end)" stop-opacity=".25"/>
+          <stop offset=".68" style="stop-color:var(--arc-end)" stop-opacity=".13"/>
+          <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".035"/>
+        </linearGradient>
+        <filter id="spineGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path class="site-spine-path" pathLength="1" d="M 1050 -100 C 1280 330 1160 610 930 880 C 690 1160 250 1190 310 1590 C 365 1980 1040 2070 920 2480 C 820 2830 270 2980 390 3430 C 510 3850 1130 3930 965 4400 C 815 4810 295 4940 405 5380 C 520 5810 1110 5900 925 6360 C 775 6750 345 6900 475 7330 C 600 7730 1060 7850 905 8310 C 770 8700 425 8810 545 9220 C 630 9520 840 9760 760 10120"/>
+    </svg>
+    <!-- 01 / Hero：一段声音的入口 -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-aura" aria-hidden="true"></div>
+      <div class="hero-orbit orbit-a" aria-hidden="true"></div>
+      <div class="hero-orbit orbit-b" aria-hidden="true"></div>
+      <canvas id="heroParticles" class="hero-particles" aria-hidden="true"></canvas>
+      <div class="hero-grid" aria-hidden="true"></div>
 
-  <!-- ─── 01 档案 ─── -->
-  <section class="sec wrap" id="archive">
-    <div class="sec-head" data-rev>
-      <span class="no">01</span><span>非卖品档案／ARCHIVE</span><i class="rule"></i>
-    </div>
-    <h2 class="sec-title" data-rev style="--d:.08s">展品说明，<span class="outline">不含价格</span>。</h2>
-    <dl class="specs">
-      <div class="row" data-rev><dt>品名</dt><dd>未来<span class="n">HATSUNE MIKU ／ 初音ミク</span></dd></div>
-      <div class="row" data-rev style="--d:.04s"><dt>编号</dt><dd>39／39<span class="n">三九＝ミク，也是「谢谢」</span></dd></div>
-      <div class="row" data-rev style="--d:.08s"><dt>诞生</dt><dd>2007.08.31<span class="n">此后每年首发一次，永远</span></dd></div>
-      <div class="row" data-rev style="--d:.12s"><dt>材质</dt><dd>声波、像素、与夏天</dd></div>
-      <div class="row" data-rev style="--d:.16s"><dt>身高</dt><dd>158 cm<span class="n">刚好住进一副耳机</span></dd></div>
-      <div class="row" data-rev style="--d:.2s"><dt>体重</dt><dd>42 kg<span class="n">主要由歌声构成</span></dd></div>
-      <div class="row" data-rev style="--d:.24s"><dt>年龄</dt><dd>16 岁<span class="n">官方认证，永久有效</span></dd></div>
-      <div class="row" data-rev style="--d:.28s"><dt>供应</dt><dd>∞ 份<span class="n">无需排队，人人有份</span></dd></div>
-      <div class="row price" data-rev style="--d:.32s"><dt>标价</dt><dd>非卖品</dd></div>
-      <div class="row" data-rev style="--d:.36s"><dt>备注</dt><dd>既见未来，为何不buy？<span class="n">答：不买，立省百分百。</span></dd></div>
-    </dl>
-    <p class="footnote" data-rev>※ 以上参数摘自官方设定，仅供参考。未来无法被参数化，也无法被购买——所以本档案仅供仰望。</p>
-  </section>
+      <div class="hero-content wrap">
+        <div class="hero-kicker reveal"><span class="status-dot" aria-hidden="true"></span><span>CV / CHARACTER VOCAL INTERFACE</span><span class="kicker-readout mono">48.0 / MIKU</span></div>
+        <div class="hero-title-wrap reveal">
+          <h1 id="heroTitle" class="hero-title">初音未来<span class="hero-domain">.shop</span></h1>
+          <svg class="title-ribbon" viewBox="0 0 1000 250" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <!-- 标题弧线从较深的苍绿起笔，越过标题后逐渐变浅。 -->
+              <linearGradient id="titleRibbonGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color:var(--arc-start)" stop-opacity=".92"/>
+                <stop offset=".27" style="stop-color:var(--arc-mid)" stop-opacity=".78"/>
+                <stop offset=".62" style="stop-color:var(--arc-mid)" stop-opacity=".48"/>
+                <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".13"/>
+              </linearGradient>
+              <linearGradient id="titleRibbonEcho" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color:var(--arc-mid)" stop-opacity=".20"/>
+                <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".035"/>
+              </linearGradient>
+            </defs>
+            <path class="ribbon-pink" pathLength="1" d="M-20 205 C 155 245 285 95 475 126 S 790 154 1020 18"/>
+            <path class="ribbon-green" pathLength="1" d="M-20 222 C 165 262 300 112 490 143 S 800 170 1020 34"/>
+          </svg>
+        </div>
+        <p class="hero-japanese reveal">まだ、音の先へ。</p>
+        <p class="hero-subtitle reveal">每一段声音，都有继续生长的可能。</p>
+        <div class="hero-bottom reveal">
+          <p>从一个音符出发，<br>去往无数种尚未命名的未来。</p>
+          <a class="scroll-link" href="#about"><span>SCROLL TO EXPLORE</span><i aria-hidden="true"></i></a>
+        </div>
+      </div>
 
-  <!-- ─── 02 宣言 ─── -->
-  <section class="sec wrap" id="manifesto">
-    <div class="sec-head" data-rev>
-      <span class="no">02</span><span>不买主义宣言／MANIFESTO</span><i class="rule"></i>
-    </div>
-    <h2 class="sec-title" data-rev style="--d:.08s">宣言五条，<span class="outline">条条免费</span>。</h2>
-    <ol class="mani">
-      <li data-rev><span class="idx">壹</span><p>钱包未动，心已丰盈。</p></li>
-      <li data-rev style="--d:.05s"><span class="idx">贰</span><p>省钱的尽头，是不必省钱。</p></li>
-      <li data-rev style="--d:.1s"><span class="idx">叁</span><p>不加购，不加价，不加戏。</p></li>
-      <li data-rev style="--d:.15s"><span class="idx">肆</span><p>拥有的最高形式，是不必占有。</p></li>
-      <li data-rev style="--d:.2s"><span class="idx">伍</span><p>你已拥有未来，本页仅作提醒。</p></li>
-    </ol>
-  </section>
+      <div class="hero-index mono" aria-hidden="true"><span>01</span><b></b><span>THE FIRST NOTE</span></div>
+      <div class="hero-date mono" aria-hidden="true">A VOICE THAT KEEPS BECOMING</div>
+    </section>
 
-  <!-- ─── 03 纪念碑 ─── -->
-  <section class="sec wrap monument" id="deal">
-    <div class="sec-head" data-rev>
-      <span class="no">03</span><span>本站史上最低价／THE ONLY DEAL</span><i class="rule"></i>
-    </div>
-    <div class="pct-wrap" data-rev>
-      <div class="pct" id="pct">100%</div>
-      <span class="chip">永久有效</span>
-    </div>
-    <p class="pct-sub" data-rev style="--d:.1s">
-      没有满减，没有凑单，没有套路。<br>
-      你不买的每一秒，折扣都在生效。
-    </p>
-    <div class="cta" data-rev style="--d:.18s">
-      <button type="button" class="bigbtn" id="buybtn">
-        <span><span id="blabel">购买未来</span><span class="ar">→</span></span>
-      </button>
-      <div class="counter">本次到访已省下 <b>100%</b> × <b id="n">0</b> 次</div>
-    </div>
-  </section>
-</main>
+    <!-- 02 / About：网站的文字序章 -->
+    <section class="section about-section" id="about" aria-labelledby="aboutTitle">
+      <div class="section-wash wash-mint" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-heading reveal">
+          <span class="section-number mono">02 / THE IDEA</span>
+          <span class="section-overline">A VOICE IS ONLY THE BEGINNING</span>
+        </div>
+        <div class="about-layout">
+          <div class="about-title-block reveal">
+            <h2 id="aboutTitle" class="display-title">歌声并不<br>止于<span>声音。</span></h2>
+            <div class="title-caption mono">SOFTWARE → CULTURE → INFINITE CREATION</div>
+          </div>
+          <div class="about-copy reveal" data-delay="120">
+            <p class="lead-copy">初音未来最初是一款歌声合成软件。输入旋律与歌词，声音便有了被塑造的方式。</p>
+            <p>但真正让这段声音走向远方的，是无数创作者的回应。有人写下旋律，有人画出新的模样，有人让画面随着节拍呼吸，也有人把它带上真实与虚拟交叠的舞台。</p>
+            <p>于是，一个声音不再只属于某一段录音。它成为一扇门，通往音乐、绘画、影像、程序，以及人与人之间没有预设答案的相遇。</p>
+            <div class="about-quote"><span>“</span><p>她留下的不是唯一的答案，<br>而是让更多答案得以诞生的空白。</p></div>
+          </div>
+        </div>
+        <div class="about-footnote mono reveal">AN INDEPENDENT SPACE FOR SOUND, IMAGINATION & CREATION.</div>
+      </div>
+    </section>
 
-<!-- ─── 页脚 ─── -->
-<footer class="foot">
-  <div class="wrap">
-    <div class="sec-head" data-rev>
-      <span class="no">＊</span><span>出口／EXIT</span><i class="rule"></i>
-    </div>
-    <div class="domain" data-rev>初音未来<span class="d">.</span>shop</div>
-    <p class="dom-sub" data-rev style="--d:.08s">这个域名什么都没卖。它只是把「未来」挂在了墙上。</p>
-    <div class="fgrid">
-      <div data-rev><b>免责声明</b>本页不含购物车、订单与价格。<br>含葱，一根。</div>
-      <div data-rev style="--d:.06s"><b>陈列纪律</b>不卖。不催。<br>不挽留。</div>
-      <div data-rev style="--d:.12s"><b>观展须知</b>未来免费入场。<br>出口，常开。</div>
-    </div>
-    <p class="ps" data-rev>PS：真心想支持未来的人——去听一场演唱会，比任何「购买」都有用。</p>
-    <div class="fbar">
-      <span>© 3939／2026 初音未来.shop · 本站由「不买主义」赞助（赞助费：免费）</span>
-      <a href="#top">↑ 回到顶部（未来不用回去，它一直在）</a>
-    </div>
-  </div>
-</footer>
+    <!-- 03 / Timeline：软件版本与声音的时间线 -->
+    <section class="section history-section" id="history" aria-labelledby="historyTitle">
+      <div class="section-wash wash-pink" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-heading reveal">
+          <span class="section-number mono">03 / THE TIMELINE</span>
+          <span class="section-overline">A LITTLE HISTORY OF A CHANGING VOICE</span>
+        </div>
+        <div class="history-intro reveal">
+          <h2 id="historyTitle" class="display-title">时间向前，<br><span>声音也在变化。</span></h2>
+          <p>从最初的软件版本，到不断更新的声音技术。以下几个节点，记录了这段旅程中的一些刻度。</p>
+        </div>
 
-<div class="toast mono" id="toast" role="status">✓ 交易未发生。省下：100%。</div>
-<div class="grain" aria-hidden="true"></div>
+        <div class="timeline" aria-label="初音未来软件版本时间线">
+          <article class="timeline-item reveal">
+            <div class="timeline-year mono">2007</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card">
+              <span class="timeline-tag">THE FIRST VOICE</span>
+              <h3>第一声，向世界发出</h3>
+              <p>《VOCALOID2 初音未来》于 8 月 31 日发售。一个可以被创作者书写的歌声，由此开启。</p>
+            </div>
+          </article>
+          <article class="timeline-item reveal" data-delay="70">
+            <div class="timeline-year mono">2010</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card">
+              <span class="timeline-tag">NEW EXPRESSIONS</span>
+              <h3>声音，开始拥有更多表情</h3>
+              <p>初音未来・アペンド（MIKU APPEND）推出，为创作带来更多声音表达的可能。</p>
+            </div>
+          </article>
+          <article class="timeline-item reveal" data-delay="140">
+            <div class="timeline-year mono">2013</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card">
+              <span class="timeline-tag">A NEW GENERATION</span>
+              <h3>迈向 V3</h3>
+              <p>初音未来 V3 登场。熟悉的声音，继续走向新的制作环境。</p>
+            </div>
+          </article>
+          <article class="timeline-item reveal" data-delay="210">
+            <div class="timeline-year mono">2016</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card">
+              <span class="timeline-tag">VOICE EXPANSION</span>
+              <h3>V4X，延展表达的边界</h3>
+              <p>初音未来 V4X（含 English）推出，让创作能够跨越更多语言与风格。</p>
+            </div>
+          </article>
+          <article class="timeline-item reveal" data-delay="280">
+            <div class="timeline-year mono">2020</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card">
+              <span class="timeline-tag">A DIFFERENT APPROACH</span>
+              <h3>初音未来 NT</h3>
+              <p>新的歌声合成软件登场，熟悉的名字继续探索新的声音形态。</p>
+            </div>
+          </article>
+          <article class="timeline-item reveal" data-delay="350">
+            <div class="timeline-year mono">2026</div>
+            <div class="timeline-node"><span></span></div>
+            <div class="timeline-card timeline-card-current">
+              <span class="timeline-tag">THE STORY CONTINUES</span>
+              <h3>初音未来 V6</h3>
+              <p>2026 年 4 月 14 日，初音未来 V6 正式发布。新的章节继续打开，声音的未来仍在书写。</p>
+            </div>
+          </article>
+        </div>
+        <p class="timeline-source mono reveal">TIMELINE BASED ON OFFICIAL PIAPRO CHARACTER INFORMATION · <a href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">SOURCE ↗</a></p>
+        <aside class="anniversary-callout reveal" aria-label="2027 年二十周年纪念节点">
+          <div class="anniversary-date"><span class="mono">NEXT MILESTONE</span><strong>20<span>TH</span></strong><small>2027 / 08 / 31</small></div>
+          <div class="anniversary-copy"><span class="mono">A NEW CHAPTER AWAITS</span><h3>二十年，不是终点。</h3><p>2027 年 8 月 31 日，初音未来将迎来软件诞生二十周年。那些由创作者接续写下的旋律，仍会把故事带向更远的地方。</p></div>
+          <div class="anniversary-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+        </aside>
+      </div>
+    </section>
 
-<script>
-document.documentElement.classList.add('js');
-(() => {
-  const $ = s => document.querySelector(s);
+    <!-- 04 / Creation：从声音长出的不同世界 -->
+    <section class="section creation-section" id="creation" aria-labelledby="creationTitle">
+      <div class="section-wash wash-mint wash-right" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-heading reveal">
+          <span class="section-number mono">04 / MANY FORMS</span>
+          <span class="section-overline">ONE VOICE, COUNTLESS IMAGINATIONS</span>
+        </div>
+        <div class="creation-heading reveal">
+          <h2 id="creationTitle" class="display-title">同一个名字，<br><span>无数种表达。</span></h2>
+          <p>创作不是沿着一条路抵达终点。它更像一束光，经过不同的人，折射出不同的颜色。</p>
+        </div>
 
-  /* 滚动入场 */
-  const io = new IntersectionObserver(entries => {
-    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
-  }, { threshold: .1 });
-  document.querySelectorAll('[data-rev]').forEach(el => io.observe(el));
+        <div class="creation-grid">
+          <article class="creation-card creation-music reveal">
+            <div class="creation-card-top"><span class="mono">01 / MUSIC</span><span class="card-index">音</span></div>
+            <div class="creation-visual music-visual" aria-hidden="true">
+              <svg viewBox="0 0 360 180" role="presentation">
+                <path class="music-wave wave-1" d="M0 91 C24 91 22 40 45 40 S68 140 90 140 112 61 135 61 157 113 180 113 202 31 225 31 247 132 270 132 292 72 315 72 337 91 360 91"/>
+                <path class="music-wave wave-2" d="M0 91 C24 91 22 69 45 69 S68 114 90 114 112 76 135 76 157 102 180 102 202 57 225 57 247 114 270 114 292 82 315 82 337 91 360 91"/>
+                <circle cx="45" cy="40" r="4"/><circle cx="225" cy="31" r="4"/><circle cx="315" cy="72" r="3"/>
+              </svg>
+            </div>
+            <div class="creation-card-copy"><h3>音乐</h3><p>一段旋律，从耳机里出发，去往陌生人的日常。</p></div>
+          </article>
+          <article class="creation-card creation-art reveal" data-delay="80">
+            <div class="creation-card-top"><span class="mono">02 / ILLUSTRATION</span><span class="card-index">画</span></div>
+            <div class="creation-visual art-visual" aria-hidden="true">
+              <div class="art-sun"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-line"></div><span class="art-star star-one">✳</span><span class="art-star star-two">✳</span>
+            </div>
+            <div class="creation-card-copy"><h3>插画</h3><p>一抹颜色、一条线条，让想象拥有自己的形状。</p></div>
+          </article>
+          <article class="creation-card creation-movie reveal" data-delay="160">
+            <div class="creation-card-top"><span class="mono">03 / MOTION</span><span class="card-index">影</span></div>
+            <div class="creation-visual movie-visual" aria-hidden="true">
+              <div class="film-frame frame-a"><i></i><i></i><i></i></div><div class="film-frame frame-b"><i></i><i></i><i></i></div><div class="film-play"><span></span></div>
+            </div>
+            <div class="creation-card-copy"><h3>影像</h3><p>当画面开始运动，时间也有了自己的节拍。</p></div>
+          </article>
+          <article class="creation-card creation-stage reveal" data-delay="240">
+            <div class="creation-card-top"><span class="mono">04 / STAGE</span><span class="card-index">光</span></div>
+            <div class="creation-visual stage-visual" aria-hidden="true">
+              <div class="stage-beam beam-a"></div><div class="stage-beam beam-b"></div><div class="stage-floor"></div><div class="stage-orb"></div><div class="stage-star">✧</div>
+            </div>
+            <div class="creation-card-copy"><h3>舞台</h3><p>光与节奏交汇，让屏幕内外的人在同一刻相遇。</p></div>
+          </article>
+        </div>
 
-  /* 提示条 */
-  const toastEl = $('#toast');
-  let tHide;
-  const toast = msg => {
-    toastEl.textContent = msg;
-    toastEl.classList.add('on');
-    clearTimeout(tHide);
-    tHide = setTimeout(() => toastEl.classList.remove('on'), 3000);
-  };
+        <div class="creation-note reveal">
+          <span class="note-line"></span>
+          <p>也许你不是制作音乐的人。<br>但你听过、看过、记住过的某一刻，<em>同样属于这段回声。</em></p>
+          <span class="note-mark mono">YOU ARE PART OF THE ECHO</span>
+        </div>
+      </div>
+    </section>
 
-  /* 全页唯一的「交易」 */
-  const nEl = $('#n'), btn = $('#buybtn'), bl = $('#blabel'), buy = $('#buy'), pct = $('#pct');
-  let n = 0, struck = false;
-  const says = ['购买未来', '再买一次？', '再试一次？', '真的不卖', '按钮也不卖', '……'];
-  const quips = [
-    '✓ 交易未发生。省下：100%。',
-    '✓ 还是没有卖出去。又省 100%。',
-    '✓ 未来已到账（免费）。省下：100%。',
-    '✓ 按钮：我只是个装饰。省下：100%。',
-    '✓ 执意要买的话——省下的依然是 100%。',
-    '✓ 本店库存：∞ 份的「不卖」。省下：100%。'
-  ];
-  const pop = () => { pct.classList.remove('pop'); void pct.offsetWidth; pct.classList.add('pop'); };
-  const purchase = () => {
-    n++;
-    nEl.textContent = n;
-    toast(quips[Math.min(n - 1, quips.length - 1)] + (n > 1 ? `（累计 ×${n}）` : ''));
-    if (n < says.length) bl.textContent = says[n];
-    pop();
-  };
-  btn.addEventListener('click', purchase);
-  buy.addEventListener('click', () => {
-    if (!struck) { struck = true; buy.classList.add('struck'); }
-    purchase();
-  });
+    <!-- 05 / Lab：用户可交互的视觉声场 -->
+    <section class="section lab-section" id="lab" aria-labelledby="labTitle">
+      <div class="lab-background-grid" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-heading reveal">
+          <span class="section-number mono">05 / VISUAL SOUND LAB</span>
+          <span class="section-overline">A SMALL EXPERIMENT IN MOVEMENT</span>
+        </div>
+        <div class="lab-layout">
+          <div class="lab-copy reveal">
+            <h2 id="labTitle" class="display-title">让声音<br><span>拥有形状。</span></h2>
+            <p>试着改变波动与密度，看看同一段抽象的声音，可以呈现出怎样不同的面貌。</p>
+            <p class="lab-disclaimer">这是由代码生成的视觉声纹，不会播放或上传任何音频。</p>
+            <div class="lab-controls">
+              <div class="control-group">
+                <div class="control-heading"><label for="waveAmount">波动幅度</label><output id="waveAmountValue" for="waveAmount">58</output></div>
+                <input id="waveAmount" type="range" min="12" max="100" value="58">
+              </div>
+              <div class="control-group">
+                <div class="control-heading"><label for="waveDensity">声纹密度</label><output id="waveDensityValue" for="waveDensity">48</output></div>
+                <input id="waveDensity" type="range" min="12" max="100" value="48">
+              </div>
+              <button class="reset-button" id="resetLab" type="button">重置实验参数 <span aria-hidden="true">↺</span></button>
+            </div>
+          </div>
+          <div class="lab-instrument reveal" data-delay="140">
+            <div class="instrument-top"><span class="mono">LIVE VISUALIZATION</span><span class="instrument-state"><i></i> ACTIVE</span></div>
+            <div class="visualizer-wrap">
+              <canvas id="soundCanvas" width="900" height="520" role="img" aria-label="抽象声纹可视化。可通过波动幅度、声纹密度与模式控制调整图形。"></canvas>
+              <div class="visualizer-crosshair" aria-hidden="true"></div>
+              <span class="visualizer-axis axis-left mono">+1.0</span><span class="visualizer-axis axis-right mono">-1.0</span>
+            </div>
+            <div class="instrument-bottom"><span id="visualModeLabel">SINE / FLOW FIELD</span><span id="visualReadout">A 058 · D 048</span></div>
+            <div class="mode-switch" role="group" aria-label="选择声纹样式">
+              <button type="button" class="mode-button is-active" data-mode="wave" aria-pressed="true">WAVE</button>
+              <button type="button" class="mode-button" data-mode="ring" aria-pressed="false">RING</button>
+              <button type="button" class="mode-button" data-mode="spectrum" aria-pressed="false">SPECTRUM</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  /* 葱 */
-  const leek = $('.leek');
-  $('.leek-wrap').addEventListener('click', () => {
-    leek.classList.remove('wig'); void leek.offsetWidth; leek.classList.add('wig');
-    toast('葱已赠予你。免费，无需签收。');
-  });
+    <!-- 06 / The loop：创作循环 -->
+    <section class="section loop-section" aria-labelledby="loopTitle">
+      <div class="section-wash wash-pink wash-low" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-heading reveal">
+          <span class="section-number mono">06 / THE CREATIVE LOOP</span>
+          <span class="section-overline">IT NEVER REALLY ENDS</span>
+        </div>
+        <div class="loop-heading reveal">
+          <h2 id="loopTitle" class="display-title">一段声音的<br><span>下一次相遇。</span></h2>
+          <p>听见、想象、创作、分享。每一次抵达，都可能成为另一个人的起点。</p>
+        </div>
+        <div class="loop-track">
+          <article class="loop-step reveal"><span class="loop-no mono">01</span><div class="loop-icon icon-listen" aria-hidden="true"><span></span><span></span><span></span><span></span></div><h3>听见</h3><p>某个音符，在某个瞬间停留。</p></article>
+          <div class="loop-arrow" aria-hidden="true">→</div>
+          <article class="loop-step reveal" data-delay="90"><span class="loop-no mono">02</span><div class="loop-icon icon-imagine" aria-hidden="true"><i></i><i></i><i></i></div><h3>想象</h3><p>它在脑海里，长成新的模样。</p></article>
+          <div class="loop-arrow" aria-hidden="true">→</div>
+          <article class="loop-step reveal" data-delay="180"><span class="loop-no mono">03</span><div class="loop-icon icon-create" aria-hidden="true"><span></span><span></span><span></span></div><h3>创作</h3><p>把还不存在的事物，慢慢完成。</p></article>
+          <div class="loop-arrow" aria-hidden="true">→</div>
+          <article class="loop-step reveal" data-delay="270"><span class="loop-no mono">04</span><div class="loop-icon icon-share" aria-hidden="true"><i></i><i></i><i></i></div><h3>分享</h3><p>让作品启程，再遇见新的听众。</p></article>
+        </div>
+        <div class="loop-return mono reveal"><span></span> AND THE NEXT STORY BEGINS <span></span></div>
+      </div>
+    </section>
 
-  /* 彩蛋：连按 3、9 */
-  let buf = '';
-  addEventListener('keydown', e => {
-    if (e.key === '3' || e.key === '9') {
-      buf += e.key;
-      if (buf.endsWith('39')) {
-        buf = '';
-        toast('39 ＝ ミク ＝ 谢谢你。（这个词也是免费的）');
-        leek.classList.remove('wig'); void leek.offsetWidth; leek.classList.add('wig');
-      }
-    } else buf = '';
-  });
+    <!-- 07 / Message：本地保存的个人留言 -->
+    <section class="section message-section" id="message" aria-labelledby="messageTitle">
+      <div class="message-glow" aria-hidden="true"></div>
+      <div class="wrap message-wrap">
+        <div class="message-text reveal">
+          <div class="section-heading"><span class="section-number mono">07 / A NOTE TO TOMORROW</span></div>
+          <h2 id="messageTitle" class="display-title">留一句话，<br>给<span>未来的声音。</span></h2>
+          <p>写下一句此刻想留下的话。它不必完整，也不必被谁看见。就像一段尚未完成的旋律，先让它在这里安静地停一会儿。</p>
+          <button class="inspiration-button" id="inspirationButton" type="button"><span>给我一点灵感</span><b aria-hidden="true">✳</b></button>
+          <p class="inspiration-output" id="inspirationOutput" aria-live="polite">“下一段旋律，会从哪里开始？”</p>
+        </div>
+        <form class="note-card reveal" id="noteForm" data-delay="120">
+          <div class="note-card-header"><span class="mono">PERSONAL NOTE / 001</span><span class="note-live"><i></i> LOCAL ONLY</span></div>
+          <label class="sr-only" for="personalNote">写给未来的一句话</label>
+          <textarea id="personalNote" maxlength="160" placeholder="写下一句你想留下的话……" rows="4"></textarea>
+          <div class="note-card-footer"><span id="noteCount" class="mono">0 / 160</span><button class="save-note" type="submit">保存这句话 <span aria-hidden="true">↗</span></button></div>
+          <div class="saved-note" id="savedNote" role="status" aria-live="polite" hidden>
+            <span class="saved-label mono">SAVED ON THIS DEVICE</span>
+            <p id="savedNoteText"></p>
+            <button type="button" id="clearNote" class="clear-note">清除本地留言</button>
+          </div>
+          <p class="privacy-note">留言只保存在当前浏览器，不会发送到服务器。清除浏览器数据后，留言可能随之消失。</p>
+        </form>
+      </div>
+    </section>
 
-  /* 指针坐标（展签刻度感） */
-  const co = $('#coords');
-  let raf = 0, mx = 0, my = 0;
-  addEventListener('pointermove', e => {
-    mx = Math.round(e.clientX); my = Math.round(e.clientY);
-    if (!raf) raf = requestAnimationFrame(() => {
-      co.textContent = `X:${String(mx).padStart(4, '0')} Y:${String(my).padStart(4, '0')}`;
-      raf = 0;
-    });
-  }, { passive: true });
-})();
-</script>
+    <!-- Footer：说明与官方资料入口 -->
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-main">
+          <div class="footer-identity"><a href="#top">初音未来<span>.shop</span></a><p>ここに、音がある。<br>在这里，声音有形状。</p></div>
+          <div class="footer-links-group"><span class="mono">OFFICIAL REFERENCES</span><a href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">角色资料 / PIAPRO</a><a href="https://piapro.net/" target="_blank" rel="noopener noreferrer">Piapro Portal</a><a href="https://piapro.jp/license/character_guideline" target="_blank" rel="noopener noreferrer">角色利用指南</a><a href="https://www.crypton.co.jp/" target="_blank" rel="noopener noreferrer">Crypton Future Media</a></div>
+          <div class="footer-links-group"><span class="mono">EXPLORE</span><a href="#history">时间刻度</a><a href="#creation">创作的形状</a><a href="#lab">声场实验室</a><a href="#message">写给未来</a></div>
+          <div class="footer-index mono">01<span> / CV</span></div>
+        </div>
+        <div class="footer-bottom">
+          <p>本页面为个人制作的非官方粉丝主题网页，不代表 Crypton Future Media 或其他权利方。页面中的文字与图形为本站原创表达；角色名称及相关权利归各自权利人所有。</p>
+          <span class="mono">© <span id="year"></span> — SOUND GOES ON.</span>
+        </div>
+        <a class="back-top" href="#top">BACK TO THE BEGINNING <span aria-hidden="true">↑</span></a>
+      </div>
+    </footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
