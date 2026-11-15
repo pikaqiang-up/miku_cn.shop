@@ -1,35 +1,424 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8fbfa">
-  <meta name="robots" content="noindex,follow">
-  <title>404 · 初音未来.shop</title>
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@200;300;400&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    :root{--mint:#39c5bb;--ink:#203735;--muted:#617772;--paper:#f8fbfa;--mono:"IBM Plex Mono",monospace;--sans:"Manrope","Noto Sans SC",system-ui,sans-serif}
-    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{display:grid;place-items:center;padding:28px;background:radial-gradient(ellipse at 18% 18%,rgba(57,197,187,.14),transparent 36%),radial-gradient(ellipse at 85% 82%,rgba(57,197,187,.08),transparent 36%),var(--paper);color:var(--ink);font-family:var(--sans)}
-    main{position:relative;width:min(100%,820px);padding:clamp(28px,7vw,78px);overflow:hidden;border:1px solid rgba(57,197,187,.28);border-radius:34px;background:rgba(245,250,248,.88)}
-    .eyebrow{display:flex;gap:12px;align-items:center;color:var(--muted);font:10px var(--mono);letter-spacing:.17em}.eyebrow b{color:#c84d59;font-weight:500}
-    h1{margin:48px 0 12px;font-size:clamp(68px,15vw,150px);font-weight:200;letter-spacing:.02em;line-height:.95;color:#1b3633}h1 span{color:#238f87;font-size:.32em}
-    p{max-width:34em;color:var(--muted);font-size:14px;line-height:2.1}.jp{margin-top:30px;color:#238f87;letter-spacing:.16em}
-    a{display:inline-flex;align-items:center;gap:14px;margin-top:34px;padding:12px 0;border-bottom:1px solid rgba(57,197,187,.65);color:#176f69;font:11px var(--mono);letter-spacing:.12em;text-decoration:none}
-    svg{position:absolute;right:-6%;top:12%;width:56%;height:62%;pointer-events:none;opacity:.55}.curve{fill:none;stroke:#39c5bb;stroke-width:1.4;stroke-linecap:round}
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f8f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1211" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex,follow">
+<meta name="description" content="这个地址上没有声音。首页还在，十二首歌、十六个词条也还在。">
+<title>这里没有声音 · 404 · 初音未来.shop</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="初音未来.shop">
+<meta property="og:title" content="这里没有声音 · 404">
+<meta property="og:description" content="地址上什么都没有。首页还在，十二首歌与十六个词条也还在。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="这里没有声音 · 404">
+<meta name="twitter:description" content="地址上什么都没有。首页还在。">
+<link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" data-asset="favicon.svg">
+<script>
+  /* 和主站同一套判断：本地有手动选择就照做，没有则跟随系统（浏览器）。
+     顺手把 data-theme-state 一起写上，两个页面的状态机不会各说各话。 */
+  (function () {
+    var root = document.documentElement;
+    var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    var KEY = 'miku-space-theme';
+
+    function savedTheme() {
+      try {
+        var value = localStorage.getItem(KEY);
+        return (value === 'light' || value === 'dark') ? value : 'system';
+      } catch (e) { return 'system'; /* 隐私模式可能禁用存储 */ }
+    }
+    function addMeta(content, media) {
+      var meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      meta.setAttribute('content', content);
+      if (media) meta.setAttribute('media', media);
+      document.head.appendChild(meta);
+    }
+    function apply(state) {
+      var dark = state === 'dark' || (state === 'system' && !!(mq && mq.matches));
+      root.setAttribute('data-theme-state', state);
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+
+      /* 状态栏配色：跟随时交给双 media，浏览器自己挑；手动指定时换成单一 meta，
+         否则系统口味与选择相反时地址栏会配错色 */
+      var metas = document.querySelectorAll('meta[name="theme-color"]');
+      if (state === 'system') {
+        if (metas.length === 1) {
+          metas[0].parentNode.removeChild(metas[0]);
+          addMeta('#f7f8f7', '(prefers-color-scheme: light)');
+          addMeta('#0b1211', '(prefers-color-scheme: dark)');
+        }
+      } else if (metas.length === 1 && !metas[0].getAttribute('media')) {
+        metas[0].setAttribute('content', dark ? '#0b1211' : '#f7f8f7');
+      } else {
+        for (var i = metas.length - 1; i >= 0; i--) metas[i].parentNode.removeChild(metas[i]);
+        addMeta(dark ? '#0b1211' : '#f7f8f7', null);
+      }
+    }
+
+    apply(savedTheme());
+
+    /* 停在 404 页时也照常跟随：系统口味变了，或者主站在别的标签页切了主题 */
+    if (mq) {
+      var onChange = function () {
+        if (root.getAttribute('data-theme-state') === 'system') apply('system');
+      };
+      if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onChange);
+      else if (typeof mq.addListener === 'function') mq.addListener(onChange); /* 旧版 Safari */
+    }
+    window.addEventListener('storage', function (event) {
+      if (event.key === KEY || event.key === null) apply(savedTheme());
+    });
+  })();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #f7f8f7;
+    --ink: #0f1614;
+    --ink-2: #3d4744;
+    --ink-3: #5e6a66;
+    --accent-ink: #0c6e67;
+    --pink: #c94f74;
+    --line: rgba(15, 34, 30, .12);
+    --line-2: rgba(15, 34, 30, .24);
+    --tint: rgba(12, 110, 103, .06);
+    --meta: #4f5b57;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, "Noto Sans Mono CJK SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; margin: 0; }
+  body { overflow-x: clip; }
+  body {
+    min-height: 100svh;
+    display: grid; place-items: center;
+    padding: clamp(24px, 5vw, 64px);
+    background: var(--paper); color: var(--ink-2);
+    font: 400 17px/1.8 var(--sans); letter-spacing: .01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; border-radius: 4px; }
+
+  main {
+    width: min(1120px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 64px);
+  }
+  .copy { grid-area: 1 / 1; }
+  .stage { grid-area: 1 / 2; }
+  .foot { grid-area: 2 / 1 / 3 / -1; }
+
+  .kicker {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 clamp(14px, 2.4vw, 22px);
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .kicker b { color: var(--accent-ink); font-weight: 500; }
+  .kicker i { display: block; width: 22px; height: 1px; background: var(--line-2); }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(96px, 14vw, 176px);
+    font-weight: 600; line-height: .86; letter-spacing: -.06em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lede {
+    margin: clamp(20px, 3vw, 30px) 0 0;
+    font-size: clamp(21px, 2.4vw, 26px);
+    line-height: 1.55; letter-spacing: -.01em;
+    color: var(--ink);
+  }
+  .sub {
+    margin: 14px 0 0; max-width: 30em;
+    font-size: 15px; line-height: 1.95; color: var(--ink-3);
+    text-wrap: pretty;
+  }
+  .sub em { font-style: normal; color: var(--ink-2); }
+
+  /* 把用户实际访问的地址显示出来，省得他反复检查自己有没有打错 */
+  .missed {
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    margin: 14px 0 0;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .03em;
+    color: var(--ink-3);
+  }
+  .missed::before { content: "↳"; flex: none; color: var(--pink); }
+  .missed b { font-weight: 400; color: var(--ink-2); overflow-wrap: anywhere; }
+  .missed[hidden] { display: none; }
+
+  /* 地址里出现了「song」「gloss」这类词，就顺手指出那一节在哪 */
+  .hint {
+    margin: 16px 0 0; padding: 11px 15px;
+    border-radius: 12px; background: var(--tint);
+    font-size: 14px; line-height: 1.75; color: var(--ink-2);
+  }
+  .hint[hidden] { display: none; }
+  .hint b { font-weight: 500; color: var(--ink); }
+  .hint a {
+    color: var(--accent-ink); text-decoration: none; white-space: nowrap;
+    border-bottom: 1px solid transparent; transition: border-color .2s ease;
+  }
+  .hint a:hover { border-bottom-color: currentColor; }
+  .hint a::after { content: " →"; }
+
+  .actions {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 14px clamp(20px, 3vw, 32px);
+    margin-top: clamp(26px, 4vw, 38px);
+  }
+  a.btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    height: 48px; padding: 0 26px;
+    border-radius: 999px;
+    background: var(--accent-ink); color: #fff;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: background-color .2s ease, transform .2s ease;
+  }
+  a.btn:hover { transform: translateY(-1px); background: #0a5d57; }
+  a.btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* 七个入口单独占一行：跟按钮挤在同一行时，宽度一窄就被压成两行 */
+  .mini { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; }
+  .mini a {
+    color: var(--ink-3); text-decoration: none;
+    border-bottom: 1px solid transparent; padding-bottom: 2px;
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .mini a:hover { color: var(--accent-ink); border-bottom-color: var(--line-2); }
+  .mini span { color: var(--line-2); }
+
+  .foot {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px 20px; flex-wrap: wrap;
+    margin: 0;
+    padding-top: 18px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--meta);
+  }
+  .foot .jp { letter-spacing: .18em; text-transform: none; font-family: var(--sans); font-size: 12px; }
+  .foot .code { display: inline-flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: .1em; }
+  .foot .code::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--pink); opacity: .8;
+  }
+
+  /* 声纹：走到中间断掉，右边只剩轨道 */
+  .stage { position: relative; }
+  .wave { display: block; width: 112%; height: auto; margin-left: -4%; overflow: visible; }
+  .wave rect { fill: var(--accent-ink); }
+  .wave .axis { stroke: var(--line); stroke-width: 1; }
+  .wave .lost-ring { fill: none; stroke: var(--pink); stroke-width: 1; opacity: .5; transform-box: fill-box; transform-origin: center; }
+  .wave .pulse { animation: signal-lost 3.6s ease-in-out infinite; }
+  .wave .track { stroke: var(--ink-2); stroke-width: 1.1; stroke-dasharray: 2 8; opacity: .78; }
+  .wave .lost { fill: var(--pink); }
+  .wave rect {
+    transform-box: fill-box; transform-origin: center;
+    animation: bar-in .5s cubic-bezier(.22, .68, .3, 1) both;
+    animation-delay: calc(var(--i, 0) * 7ms);
+  }
+  .wave .track { animation: fade-in .5s ease .62s both; }
+  @keyframes bar-in {
+    from { transform: scaleY(.06); opacity: 0; }
+    to { transform: scaleY(1); opacity: 1; }
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: .78; } }
+  @keyframes signal-lost {
+    0%, 100% { opacity: .5; transform: scale(1); }
+    50% { opacity: .12; transform: scale(1.55); }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #0b1211; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
+    --accent-ink: #6ed9ce; --pink: #f090ab;
+    --line: rgba(213, 235, 228, .14); --line-2: rgba(213, 235, 228, .3);
+    --tint: rgba(110, 217, 206, .12); --meta: #a9b7b2;
+  }
+  :root[data-theme="dark"] a.btn { color: #06201d; }
+  :root[data-theme="dark"] a.btn:hover { background: #8fe6dc; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #0b1211; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
+      --accent-ink: #6ed9ce; --pink: #f090ab;
+      --line: rgba(213, 235, 228, .14); --line-2: rgba(213, 235, 228, .3);
+      --tint: rgba(110, 217, 206, .12); --meta: #a9b7b2;
+    }
+    :root:not([data-theme="light"]) a.btn { color: #06201d; }
+    :root:not([data-theme="light"]) a.btn:hover { background: #8fe6dc; }
+  }
+
+  /* 系统开了「增强对比度」：把分隔线与描边加深，和主站保持同一处理 */
+  @media (prefers-contrast: more) {
+    :root {
+      --line: rgba(15, 34, 30, .3);
+      --line-2: rgba(15, 34, 30, .55);
+    }
+    :root[data-theme="dark"] {
+      --line: rgba(213, 235, 228, .34);
+      --line-2: rgba(213, 235, 228, .62);
+    }
+    a.btn { outline: 2px solid transparent; }
+  }
+
+  @media (max-width: 860px) {
+    /* 单列时清掉显式的网格定位，否则 col2 会撑出隐式列，把正文压窄 */
+    main { grid-template-columns: 1fr; grid-template-rows: auto; gap: 4px; }
+    .copy, .stage, .foot { grid-area: auto; }
+    /* 单列时声纹不要撑满整屏，压到一个舒服的宽度 */
+    .stage { margin-top: 18px; width: 100%; max-width: 480px; justify-self: center; }
+    .wave { width: 100%; margin-left: 0; }
+    h1 { font-size: clamp(88px, 22vw, 132px); }
+    /* 三段信息在窄屏并排会互相挤，改成左对齐的短栈 */
+    .foot { margin-top: 34px; flex-direction: column; align-items: flex-start; gap: 7px; }
+  }
+
+  @media (max-width: 480px) {
+    /* 窄屏去掉分隔符，七个入口才排得进一行 */
+    .mini { gap: 6px 12px; }
+    .mini span { display: none; }
+    .missed { font-size: 11px; }
+    .hint { font-size: 13px; padding: 10px 13px; }
+    .foot { gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
 </head>
 <body>
   <main>
-    <svg viewBox="0 0 520 360" aria-hidden="true"><path class="curve" d="M-20 290C90 310 125 80 250 110S390 210 540 8"/><path class="curve" d="M-20 314C92 334 145 106 260 136S405 235 540 32" opacity=".34"/></svg>
-    <div class="eyebrow"><b>01</b><span>CHARACTER VOCAL / SIGNAL NOT FOUND</span></div>
-    <h1>404<span> / 01</span></h1>
-    <p>这段路径暂时没有回声。也许地址写错了，也许它还没有被写进这片空间。</p>
-    <p class="jp">音のつづきは、ホームから。</p>
-    <a href="/">返回声音的入口 <span aria-hidden="true">↗</span></a>
+    <div class="copy">
+      <p class="kicker"><b>NO SIGNAL</b><i></i>ERR_404</p>
+      <h1>404</h1>
+      <p class="lede">这里没有声音。</p>
+      <p class="sub">地址里大概有一个字写错了，也可能这一小节本来就没被录进来。<em>如果你是顺着站内某个链接走到这里，那是我们漏了一处。</em></p>
+      <p class="missed" id="missed" hidden>你打开的是 <b></b></p>
+      <p class="hint" id="hint" hidden>这个地址像是在找 <b id="hintName"></b>，<a id="hintLink" href="./index.html" data-home>它在这边</a></p>
+      <div class="actions">
+        <a class="btn" href="./index.html" data-home>回到首页
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4"/></svg>
+        </a>
+        <nav class="mini" aria-label="站内其他位置">
+          <a href="./index.html#about" data-home="#about">序章</a><span aria-hidden="true">·</span>
+          <a href="./index.html#history" data-home="#history">时间</a><span aria-hidden="true">·</span>
+          <a href="./index.html#songs" data-home="#songs">作品</a><span aria-hidden="true">·</span>
+          <a href="./index.html#creation" data-home="#creation">创作</a><span aria-hidden="true">·</span>
+          <a href="./index.html#lab" data-home="#lab">声场</a><span aria-hidden="true">·</span>
+          <a href="./index.html#glossary" data-home="#glossary">词条</a><span aria-hidden="true">·</span>
+          <a href="./index.html#message" data-home="#message">留言</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="stage" aria-hidden="true">
+      <svg class="wave" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet">
+        <line class="axis" x1="0" y1="130" x2="400" y2="130"/>
+          <g opacity=".95"><rect style="--i:1" x="6.0" y="114.3" width="2.8" height="31.4" rx="1.4"/><rect style="--i:2" x="13.4" y="100.4" width="2.8" height="59.2" rx="1.4"/><rect style="--i:3" x="20.8" y="87.4" width="2.8" height="85.2" rx="1.4"/><rect style="--i:4" x="28.2" y="75.5" width="2.8" height="109.0" rx="1.4"/><rect style="--i:5" x="35.6" y="65.0" width="2.8" height="130.0" rx="1.4"/><rect style="--i:6" x="43.0" y="56.1" width="2.8" height="147.8" rx="1.4"/><rect style="--i:7" x="50.4" y="49.0" width="2.8" height="162.0" rx="1.4"/><rect style="--i:8" x="57.8" y="43.8" width="2.8" height="172.4" rx="1.4"/><rect style="--i:9" x="65.2" y="40.6" width="2.8" height="178.8" rx="1.4"/><rect style="--i:10" x="72.6" y="39.4" width="2.8" height="181.2" rx="1.4"/><rect style="--i:11" x="80.0" y="40.3" width="2.8" height="179.5" rx="1.4"/><rect style="--i:12" x="87.4" y="43.1" width="2.8" height="173.9" rx="1.4"/><rect style="--i:13" x="94.8" y="47.7" width="2.8" height="164.6" rx="1.4"/><rect style="--i:14" x="102.2" y="54.0" width="2.8" height="152.0" rx="1.4"/><rect style="--i:15" x="109.6" y="61.9" width="2.8" height="136.3" rx="1.4"/><rect style="--i:16" x="117.0" y="71.0" width="2.8" height="118.0" rx="1.4"/><rect style="--i:17" x="124.4" y="81.2" width="2.8" height="97.6" rx="1.4"/></g>
+          <g opacity=".82"><rect style="--i:18" x="131.8" y="92.2" width="2.8" height="75.6" rx="1.4"/><rect style="--i:19" x="139.2" y="103.7" width="2.8" height="52.6" rx="1.4"/><rect style="--i:20" x="146.6" y="115.5" width="2.8" height="29.1" rx="1.4"/><rect style="--i:21" x="154.0" y="124.8" width="2.8" height="10.4" rx="1.4"/><rect style="--i:22" x="161.4" y="113.4" width="2.8" height="33.2" rx="1.4"/><rect style="--i:23" x="168.8" y="102.6" width="2.8" height="54.9" rx="1.4"/><rect style="--i:24" x="176.2" y="92.5" width="2.8" height="75.0" rx="1.4"/><rect style="--i:25" x="183.6" y="83.5" width="2.8" height="93.0" rx="1.4"/><rect style="--i:26" x="191.0" y="75.7" width="2.8" height="108.6" rx="1.4"/><rect style="--i:27" x="198.4" y="69.2" width="2.8" height="121.5" rx="1.4"/><rect style="--i:28" x="205.8" y="64.2" width="2.8" height="131.5" rx="1.4"/><rect style="--i:29" x="213.2" y="60.8" width="2.8" height="138.4" rx="1.4"/><rect style="--i:30" x="220.6" y="59.0" width="2.8" height="142.1" rx="1.4"/><rect style="--i:31" x="228.0" y="58.7" width="2.8" height="142.6" rx="1.4"/><rect style="--i:32" x="235.4" y="60.0" width="2.8" height="140.0" rx="1.4"/><rect style="--i:33" x="242.8" y="62.8" width="2.8" height="134.4" rx="1.4"/><rect style="--i:34" x="250.2" y="67.0" width="2.8" height="126.0" rx="1.4"/><rect style="--i:35" x="257.6" y="72.4" width="2.8" height="115.2" rx="1.4"/><rect style="--i:36" x="265.0" y="78.9" width="2.8" height="102.2" rx="1.4"/></g>
+          <g opacity=".66"><rect style="--i:37" x="272.4" y="86.3" width="2.8" height="87.5" rx="1.4"/><rect style="--i:38" x="279.8" y="94.3" width="2.8" height="71.3" rx="1.4"/><rect style="--i:39" x="287.2" y="102.9" width="2.8" height="54.2" rx="1.4"/><rect style="--i:40" x="294.6" y="111.8" width="2.8" height="36.5" rx="1.4"/><rect style="--i:41" x="302.0" y="120.7" width="2.8" height="18.7" rx="1.4"/><rect style="--i:42" x="309.4" y="122.6" width="2.8" height="14.8" rx="1.4"/><rect style="--i:43" x="316.8" y="114.2" width="2.8" height="31.6" rx="1.4"/><rect style="--i:44" x="324.2" y="106.4" width="2.8" height="47.2" rx="1.4"/><rect style="--i:45" x="331.6" y="99.3" width="2.8" height="61.5" rx="1.4"/><rect style="--i:46" x="339.0" y="93.0" width="2.8" height="74.0" rx="1.4"/><rect style="--i:47" x="346.4" y="87.7" width="2.8" height="84.6" rx="1.4"/><rect style="--i:48" x="353.8" y="83.5" width="2.8" height="93.0" rx="1.4"/><rect style="--i:49" x="361.2" y="80.4" width="2.8" height="99.1" rx="1.4"/><rect style="--i:50" x="368.6" y="78.5" width="2.8" height="103.0" rx="1.4"/><rect style="--i:51" x="376.0" y="77.8" width="2.8" height="104.4" rx="1.4"/><rect style="--i:52" x="383.4" y="78.2" width="2.8" height="103.6" rx="1.4"/><rect style="--i:53" x="390.8" y="79.7" width="2.8" height="100.6" rx="1.4"/><rect style="--i:54" x="398.2" y="82.2" width="2.8" height="95.5" rx="1.4"/></g>
+        <line class="track" x1="434" y1="130" x2="648" y2="130"/>
+        <circle class="lost-ring pulse" cx="416" cy="130" r="26"/>
+        <circle class="lost-ring" cx="416" cy="130" r="13"/>
+        <circle class="lost" cx="416" cy="130" r="4"/>
+      </svg>
+    </div>
+
+    <p class="foot">
+      <span class="jp">ここに、音はない。</span>
+      <span>非官方 · 非商业 · 不卖任何东西</span>
+      <span class="code">初音未来.shop · ERR_NO_SIGNAL 404</span>
+    </p>
   </main>
+
+<script>
+  (function () {
+    /* 相对链接在两种情况下才对：本地打开、或直接访问 404.html（含子目录部署）。
+       当页面是被服务器拿来顶替某个不存在的地址时，地址栏里可能是任意深度，
+       相对路径会解析到错误的目录，这时改用站点根。 */
+    var direct = /\/404(\.html)?$/i.test(location.pathname);
+    var isFile = location.protocol === 'file:';
+    var rootDir = (!isFile && !direct) ? location.origin + '/' : './';
+
+    function homeHref(hash) {
+      return rootDir + 'index.html' + (hash || '');
+    }
+
+    /* 地址里常常留着用户真正想找的东西：/songs、/glossary、/live……
+       能认出来就直接指路，比让人再从七个入口里挑一遍有用。 */
+    var ROUTES = [
+      { keys: ['song', 'songs', 'music', 'track', 'tracks', 'album', 'albums', 'playlist', 'discography', 'songlist', 'lyrics'], zh: ['歌', '曲'], name: '十二首歌', hash: '#songs' },
+      { keys: ['glossary', 'gloss', 'word', 'words', 'term', 'terms', 'dictionary', 'dict', 'lexicon'], zh: ['词'], name: '十六个词条', hash: '#glossary' },
+      { keys: ['people', 'person', 'creator', 'creators', 'producer', 'producers', 'author', 'authors', 'artist', 'artists'], zh: [], name: '把声音接过去的人', hash: '#people' },
+      { keys: ['live', 'stage', 'concert', 'concerts', 'tour', 'festival', 'setlist'], zh: ['现场', '演出', '演唱会'], name: '现场的那些年', hash: '#history' },
+      { keys: ['history', 'timeline', 'version', 'versions', 'software'], zh: ['时间', '版本'], name: '时间线', hash: '#history' },
+      { keys: ['lab', 'wave', 'waves', 'sound', 'visual', 'visualizer', 'visualiser', 'voiceprint'], zh: ['声场'], name: '声场实验室', hash: '#lab' },
+      { keys: ['about', 'story', 'intro', 'concept'], zh: ['序章'], name: '序章', hash: '#about' },
+      { keys: ['message', 'note', 'notes', 'guestbook', 'letter', 'wall'], zh: ['留言'], name: '写给未来的一句话', hash: '#message' }
+    ];
+
+    function guess(raw) {
+      var text;
+      try { text = decodeURIComponent(raw).toLowerCase(); } catch (e) { text = raw.toLowerCase(); }
+      if (text.indexOf('404') > -1) return null;
+      var tokens = text.split(/[\/\-_.?=&]+/).filter(function (t) {
+        return t.length > 1 || /[\u4e00-\u9fa5]/.test(t);
+      });
+      for (var i = 0; i < ROUTES.length; i++) {
+        var route = ROUTES[i];
+        for (var j = 0; j < tokens.length; j++) {
+          if (route.keys.indexOf(tokens[j]) > -1) return route;
+          for (var k = 0; k < route.zh.length; k++) {
+            if (tokens[j].indexOf(route.zh[k]) > -1) return route;
+          }
+        }
+      }
+      return null;
+    }
+
+    var hit = guess(location.pathname);
+    if (hit) {
+      var name = document.querySelector('#hintName');
+      var link = document.querySelector('#hintLink');
+      if (name && link) {
+        name.textContent = '「' + hit.name + '」';
+        link.setAttribute('data-home', hit.hash);
+        link.href = homeHref(hit.hash);
+        document.querySelector('#hint').hidden = false;
+      }
+    }
+
+    if (!isFile && !direct) {
+      document.querySelectorAll('a[data-home]').forEach(function (a) {
+        a.href = homeHref(a.getAttribute('data-home'));
+      });
+      var icon = document.querySelector('link[data-asset]');
+      if (icon) icon.href = rootDir + 'assets/' + icon.getAttribute('data-asset');
+    }
+
+    /* 显示他实际打开的地址（跳过了 404 页自身路径的情况） */
+    try {
+      var path = decodeURIComponent(location.pathname + location.search);
+      var isPage = /\/404(\.html)?$/i.test(path) || path === '/';
+      if (!isPage && path.length > 1) {
+        var slot = document.querySelector('#missed');
+        slot.querySelector('b').textContent = path;
+        slot.hidden = false;
+      }
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>

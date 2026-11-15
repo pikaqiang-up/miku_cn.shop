@@ -3,378 +3,872 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8fbfa">
+  <meta name="theme-color" id="metaThemeColor" content="#f7f8f7">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="初音未来.shop —— 一处关于声音、想象与共同创作的非官方数字纪念空间。这里陈列着一段还没被唱完的声音。">
+  <meta name="description" content="十二首歌、十位创作者、十六个词条，以及一条从 2007 年走到今天的线索。关于一段被反复接力的声音：非官方、非商业、不卖任何东西。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://xn--7br062ccfl55p.shop/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="初音未来.shop">
   <meta property="og:title" content="初音未来.shop｜让声音继续生长">
-  <meta property="og:description" content="这里陈列着一段还没被唱完的声音。从一个音符出发，穿过不同的创作，继续回响。">
+  <meta property="og:description" content="十二首歌、十位创作者、十六个词条。一段被反复接力的声音，和它还没写完的部分。">
   <meta property="og:url" content="https://xn--7br062ccfl55p.shop/">
-  <meta property="og:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.png">
-  <meta property="og:image:type" content="image/png">
+  <meta property="og:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.jpg">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="初音未来.shop｜让声音继续生长">
-  <meta name="twitter:description" content="一处关于声音、想象与共同创作的非官方数字纪念空间。">
-  <meta name="twitter:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.png">
+  <meta name="twitter:description" content="一段还没被唱完的声音。非官方、非商业、不卖任何东西。">
+  <meta name="twitter:image" content="https://xn--7br062ccfl55p.shop/assets/og-card.jpg">
   <title>初音未来.shop｜让声音继续生长</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
-  <!-- 字体服务使用 display=swap；网络字体未及时到达时立即回退到系统字体。 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
-  <script>document.documentElement.classList.add('js');</script>
-  <!-- 首屏关键样式：外部 CSS 到达前先稳定背景与标题，减少闪白。 -->
+  <script>
+    /* 主题在第一帧之前定下来：本地有手动选择就尊重它，没有则跟随系统（浏览器）。
+       放在这里而不是等 main.js，是为了深色系统下不出现一瞬白闪。 */
+    (function () {
+      var root = document.documentElement;
+      var saved = null;
+      try { saved = localStorage.getItem('miku-space-theme'); } catch (e) { /* 隐私模式可能禁用存储 */ }
+      var state = (saved === 'light' || saved === 'dark') ? saved : 'system';
+      var dark = state === 'dark' || (state === 'system' &&
+        !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches));
+      root.setAttribute('data-theme-state', state);
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#0b1211' : '#f7f8f7');
+      root.classList.add('js');
+    })();
+  </script>
+  <!-- 首屏关键样式：外部 CSS 到达前先稳定底色与主题，避免闪白与字体跳变。 -->
   <style>
-    :root{--miku:#39c5bb;--paper:#f8fbfa;--ink:#1d302f;--font-display:"Manrope","Noto Sans SC","Noto Sans JP",Arial,sans-serif}
-    html{background:var(--paper)}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-display)}
-    .hero{min-height:100svh;background:linear-gradient(132deg,#edf8f6 0%,#f9fcfb 54%,#fbf7f9 100%)}
-    .hero-title{font-family:var(--font-display);font-weight:250;letter-spacing:.025em}
+    :root{--paper:#f7f8f7;--ink:#0f1614;--accent-ink:#0c6e67;color-scheme:light}
+    html{background:var(--paper)}
+    html[data-theme="dark"]{--paper:#0b1211;--ink:#f1f5f3;--accent-ink:#6ed9ce;color-scheme:dark}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","HarmonyOS Sans SC","MiSans","Noto Sans SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+    .hero-title{font-size:clamp(2.9rem,8.2vw,7.4rem);line-height:1.02;letter-spacing:-.03em;font-weight:500;margin:0}
   </style>
   <link rel="preload" href="./src/style.css" as="style">
   <link rel="stylesheet" href="./src/style.css">
-  <script type="module" src="./src/main.js"></script>
+  <noscript><style>.js .reveal{opacity:1!important;transform:none!important}</style></noscript>
+  <script defer src="./src/main.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
   <div class="reading-progress" aria-hidden="true"><span id="readingProgress"></span></div>
 
   <header class="site-header" id="top">
-    <a class="brand" href="#top" aria-label="初音未来.shop 首页">
-      <span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="brand-word">初音未来<span>.shop</span></span>
-    </a>
-    <nav class="main-nav" id="mainNav" aria-label="主导航">
-      <a href="#about">序章</a>
-      <a href="#history">时间</a>
-      <a href="#creation">创作</a>
-      <a href="#lab">声场</a>
-      <a href="#message">留言</a>
-    </nav>
-    <div class="header-actions">
-      <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="切换夜间模式" aria-pressed="false" title="切换明暗主题">
-        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.55 1.55m11.04 11.04 1.55 1.55M2 12h2.2m15.6 0H22M4.93 19.07l1.55-1.55M17.52 6.48l1.55-1.55"/></svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.6 8.6 0 0 1 8.8 3.8 8.8 8.8 0 1 0 20.2 15.2Z"/></svg>
-      </button>
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mainNav">
-        <span></span><span></span>
-      </button>
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="初音未来.shop 首页">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="brand-name">初音未来<span>.shop</span></span>
+      </a>
+      <nav class="main-nav" id="mainNav" aria-label="主导航">
+        <a href="#about">序章</a>
+        <a href="#history">时间</a>
+        <a href="#songs">作品</a>
+        <a href="#creation">创作</a>
+        <a href="#lab">声场</a>
+        <a href="#glossary">词条</a>
+        <a href="#message">留言</a>
+      </nav>
+      <div class="header-actions">
+        <a class="header-cta" href="#message">写一句话</a>
+        <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="切换夜间模式" aria-pressed="false" title="切换明暗主题">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.4"/><path d="M12 2.6v2.1M12 19.3v2.1M4.6 4.6l1.5 1.5m11.8 11.8 1.5 1.5M2.6 12h2.1m14.6 0h2.1M4.6 19.4l1.5-1.5M17.9 6.1l1.5-1.5"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.1A8.7 8.7 0 0 1 8.9 3.6 8.8 8.8 0 1 0 20.4 15.1Z"/></svg>
+        </button>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main id="main">
-    <svg class="site-spine" viewBox="0 0 1440 10000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="spineGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style="stop-color:var(--arc-start)" stop-opacity=".86"/>
-          <stop offset=".07" style="stop-color:var(--arc-mid)" stop-opacity=".68"/>
-          <stop offset=".18" style="stop-color:var(--arc-mid)" stop-opacity=".43"/>
-          <stop offset=".38" style="stop-color:var(--arc-end)" stop-opacity=".25"/>
-          <stop offset=".68" style="stop-color:var(--arc-end)" stop-opacity=".13"/>
-          <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".035"/>
-        </linearGradient>
-        <filter id="spineGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <path class="site-spine-path" pathLength="1" d="M 1050 -100 C 1280 330 1160 610 930 880 C 690 1160 250 1190 310 1590 C 365 1980 1040 2070 920 2480 C 820 2830 270 2980 390 3430 C 510 3850 1130 3930 965 4400 C 815 4810 295 4940 405 5380 C 520 5810 1110 5900 925 6360 C 775 6750 345 6900 475 7330 C 600 7730 1060 7850 905 8310 C 770 8700 425 8810 545 9220 C 630 9520 840 9760 760 10120"/>
-    </svg>
     <!-- 01 / Hero：一段声音的入口 -->
     <section class="hero" aria-labelledby="heroTitle">
-      <div class="hero-aura" aria-hidden="true"></div>
-      <div class="hero-orbit orbit-a" aria-hidden="true"></div>
-      <div class="hero-orbit orbit-b" aria-hidden="true"></div>
-      <canvas id="heroParticles" class="hero-particles" aria-hidden="true"></canvas>
-      <div class="hero-grid" aria-hidden="true"></div>
-
-      <div class="hero-content wrap">
-        <div class="hero-kicker reveal"><span class="status-dot" aria-hidden="true"></span><span>CV / CHARACTER VOCAL INTERFACE</span><span class="kicker-readout mono">48.0 / MIKU</span></div>
-        <div class="hero-title-wrap reveal">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="hero-glow"></span>
+      </div>
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow"><span class="live-dot" aria-hidden="true"></span><span>CV01 · CHARACTER VOCAL</span><span class="eyebrow-sep" aria-hidden="true"></span><span class="mono">2007 — 2026</span></p>
           <h1 id="heroTitle" class="hero-title">初音未来<span class="hero-domain">.shop</span></h1>
-          <svg class="title-ribbon" viewBox="0 0 1000 250" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <!-- 标题弧线从较深的苍绿起笔，越过标题后逐渐变浅。 -->
-              <linearGradient id="titleRibbonGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" style="stop-color:var(--arc-start)" stop-opacity=".92"/>
-                <stop offset=".27" style="stop-color:var(--arc-mid)" stop-opacity=".78"/>
-                <stop offset=".62" style="stop-color:var(--arc-mid)" stop-opacity=".48"/>
-                <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".13"/>
-              </linearGradient>
-              <linearGradient id="titleRibbonEcho" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" style="stop-color:var(--arc-mid)" stop-opacity=".20"/>
-                <stop offset="1" style="stop-color:var(--arc-end)" stop-opacity=".035"/>
-              </linearGradient>
-            </defs>
-            <path class="ribbon-pink" pathLength="1" d="M-20 205 C 155 245 285 95 475 126 S 790 154 1020 18"/>
-            <path class="ribbon-green" pathLength="1" d="M-20 222 C 165 262 300 112 490 143 S 800 170 1020 34"/>
-          </svg>
+          <p class="hero-jp">まだ、音の先へ。</p>
+          <p class="hero-lede">2007 年 8 月 31 日，一段声音被装进软件。<br>十九年后，它仍然没有唱完。</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">
+              <span>进入序章</span>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4"/></svg>
+            </a>
+            <a class="btn btn-quiet" href="#lab">走进声场</a>
+          </div>
+          <dl class="hero-facts">
+            <div><dt>首次发声</dt><dd class="mono">2007.08.31</dd></div>
+            <div><dt>二十周年</dt><dd class="mono">2027.08.31</dd></div>
+            <div><dt>本站</dt><dd>个人制作 · 非官方</dd></div>
+          </dl>
         </div>
-        <p class="hero-japanese reveal">まだ、音の先へ。</p>
-        <p class="hero-subtitle reveal">每一段声音，都有继续生长的可能。</p>
-        <div class="hero-bottom reveal">
-          <p>从一个音符出发，<br>去往无数种尚未命名的未来。</p>
-          <a class="scroll-link" href="#about"><span>SCROLL TO EXPLORE</span><i aria-hidden="true"></i></a>
+        <div class="hero-stage" aria-hidden="true">
+          <div class="disc">
+            <span class="disc-ring ring-1"></span>
+            <span class="disc-ring ring-2"></span>
+            <span class="disc-ring ring-3"></span>
+            <span class="disc-sweep"></span>
+            <span class="disc-core"></span>
+            <div class="eq" id="heroEq"></div>
+          </div>
+          <span class="orbit-dot dot-a"></span>
+          <span class="orbit-dot dot-b"></span>
+          <p class="stage-caption mono">LIVE SIGNAL / 39.0</p>
         </div>
       </div>
-
-      <div class="hero-index mono" aria-hidden="true"><span>01</span><b></b><span>THE FIRST NOTE</span></div>
-      <div class="hero-date mono" aria-hidden="true">A VOICE THAT KEEPS BECOMING</div>
+      <a class="hero-scroll" href="#about"><span class="mono">SCROLL</span><i aria-hidden="true"></i></a>
     </section>
 
     <!-- 02 / About：网站的文字序章 -->
-    <section class="section about-section" id="about" aria-labelledby="aboutTitle">
-      <div class="section-wash wash-mint" aria-hidden="true"></div>
+    <section class="section section--paper" id="about" aria-labelledby="aboutTitle">
       <div class="wrap">
-        <div class="section-heading reveal">
-          <span class="section-number mono">02 / THE IDEA</span>
-          <span class="section-overline">A VOICE IS ONLY THE BEGINNING</span>
-        </div>
-        <div class="about-layout">
-          <div class="about-title-block reveal">
-            <h2 id="aboutTitle" class="display-title">歌声并不<br>止于<span>声音。</span></h2>
-            <div class="title-caption mono">SOFTWARE → CULTURE → INFINITE CREATION</div>
+        <header class="section-head section-head--split reveal">
+          <div>
+            <p class="kicker"><span class="kicker-num">02</span>THE IDEA</p>
+            <h2 id="aboutTitle" class="display">在歌之前，<br><span>她只是一段声音。</span></h2>
           </div>
-          <div class="about-copy reveal" data-delay="120">
-            <p class="lead-copy">初音未来最初是一款歌声合成软件。输入旋律与歌词，声音便有了被塑造的方式。</p>
-            <p>但真正让这段声音走向远方的，是无数创作者的回应。有人写下旋律，有人画出新的模样，有人让画面随着节拍呼吸，也有人把它带上真实与虚拟交叠的舞台。</p>
-            <p>于是，一个声音不再只属于某一段录音。它成为一扇门，通往音乐、绘画、影像、程序，以及人与人之间没有预设答案的相遇。</p>
-            <div class="about-quote"><span>“</span><p>她留下的不是唯一的答案，<br>而是让更多答案得以诞生的空白。</p></div>
+          <p class="lede">没有嗓子，也没有录音棚。<br>它只把脑海里听见的，一句一句记下来。</p>
+        </header>
+
+        <div class="about-grid">
+          <div class="about-copy reveal">
+            <p class="lead">2007 年，Crypton 把一位虚构少女的声音切成薄片，<br>收进一张光盘。你写下旋律和歌词，她就照着唱。</p>
+            <p>音准、时长、换气，都能一点一点地调。可她只会唱。旋律、眼睛的颜色、画面上跟着节拍跳的那一下、把她送上真实舞台的那双手，都是别人添上去的。台下举着荧光棒的人，也是真的。</p>
+            <p>于是这段声音不再只属于某一次录音。它更像一间不锁门的排练室：写歌的、画画的、做动画的、写代码的，都可以进来，各做各的，彼此不必认识。</p>
+            <p>到今天，这间排练室的门还开着。你听见的每一版她，背后都有一个具体的人，在某个夜里改到满意为止。</p>
+            <blockquote class="quote">
+              <p>她唱的每一句，都是别人替她写的。<br>也正因为这样，她才被那么多人认作自己的。</p>
+            </blockquote>
           </div>
+          <aside class="about-aside reveal" data-delay="100">
+            <dl class="spec-list">
+              <div class="spec-row"><dt>名称</dt><dd>初音未来 · 初音ミク<small>「第一次的声音」</small></dd></div>
+              <div class="spec-row"><dt>编号</dt><dd>CV01 ／ 39<small>读作 san-kyu，也就是 thank you</small></dd></div>
+              <div class="spec-row"><dt>声源</dt><dd>藤田咲<small>声音由她录下，封面上的那个人不是她</small></dd></div>
+              <div class="spec-row"><dt>起点</dt><dd>2007.08.31<small>此后每年这天，都会多出一批新歌</small></dd></div>
+              <div class="spec-row"><dt>身高</dt><dd>158 cm<small>官方设定，十九年没改过</small></dd></div>
+              <div class="spec-row"><dt>现在</dt><dd>由所有人持续书写<small>还没有最终版本</small></dd></div>
+            </dl>
+            <div class="stat-row">
+              <div class="stat"><strong>19</strong><span>年，从一张光盘到一部手机</span></div>
+              <div class="stat"><strong>∞</strong><span>种被写下的声音，还在增加</span></div>
+            </div>
+          </aside>
         </div>
-        <div class="about-footnote mono reveal">AN INDEPENDENT SPACE FOR SOUND, IMAGINATION & CREATION.</div>
       </div>
     </section>
 
-    <!-- 03 / Timeline：软件版本与声音的时间线 -->
-    <section class="section history-section" id="history" aria-labelledby="historyTitle">
-      <div class="section-wash wash-pink" aria-hidden="true"></div>
+    <!-- 03 / Timeline：两条轨，一条是软件的版本，一条是舞台的年份 -->
+    <section class="section section--tint" id="history" aria-labelledby="historyTitle">
       <div class="wrap">
-        <div class="section-heading reveal">
-          <span class="section-number mono">03 / THE TIMELINE</span>
-          <span class="section-overline">A LITTLE HISTORY OF A CHANGING VOICE</span>
-        </div>
-        <div class="history-intro reveal">
-          <h2 id="historyTitle" class="display-title">时间向前，<br><span>声音也在变化。</span></h2>
-          <p>从最初的软件版本，到不断更新的声音技术。以下几个节点，记录了这段旅程中的一些刻度。</p>
-        </div>
+        <header class="section-head section-head--split reveal">
+          <div>
+            <p class="kicker"><span class="kicker-num">03</span>THE TIMELINE</p>
+            <h2 id="historyTitle" class="display">一版一版过去，<br><span>声音慢慢变宽。</span></h2>
+          </div>
+          <p class="lede">两条轨：上面是软件的版本，下面是她站上舞台的年份。可以切换，也可以直接拖着看。</p>
+        </header>
+      </div>
 
-        <div class="timeline" aria-label="初音未来软件版本时间线">
-          <article class="timeline-item reveal">
-            <div class="timeline-year mono">2007</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card">
-              <span class="timeline-tag">THE FIRST VOICE</span>
-              <h3>第一声，向世界发出</h3>
-              <p>《VOCALOID2 初音未来》于 8 月 31 日发售。一个可以被创作者书写的歌声，由此开启。</p>
-            </div>
-          </article>
-          <article class="timeline-item reveal" data-delay="70">
-            <div class="timeline-year mono">2010</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card">
-              <span class="timeline-tag">NEW EXPRESSIONS</span>
-              <h3>声音，开始拥有更多表情</h3>
-              <p>初音未来・アペンド（MIKU APPEND）推出，为创作带来更多声音表达的可能。</p>
-            </div>
-          </article>
-          <article class="timeline-item reveal" data-delay="140">
-            <div class="timeline-year mono">2013</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card">
-              <span class="timeline-tag">A NEW GENERATION</span>
-              <h3>迈向 V3</h3>
-              <p>初音未来 V3 登场。熟悉的声音，继续走向新的制作环境。</p>
-            </div>
-          </article>
-          <article class="timeline-item reveal" data-delay="210">
-            <div class="timeline-year mono">2016</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card">
-              <span class="timeline-tag">VOICE EXPANSION</span>
-              <h3>V4X，延展表达的边界</h3>
-              <p>初音未来 V4X（含 English）推出，让创作能够跨越更多语言与风格。</p>
-            </div>
-          </article>
-          <article class="timeline-item reveal" data-delay="280">
-            <div class="timeline-year mono">2020</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card">
-              <span class="timeline-tag">A DIFFERENT APPROACH</span>
-              <h3>初音未来 NT</h3>
-              <p>新的歌声合成软件登场，熟悉的名字继续探索新的声音形态。</p>
-            </div>
-          </article>
-          <article class="timeline-item reveal" data-delay="350">
-            <div class="timeline-year mono">2026</div>
-            <div class="timeline-node"><span></span></div>
-            <div class="timeline-card timeline-card-current">
-              <span class="timeline-tag">THE STORY CONTINUES</span>
-              <h3>初音未来 V6</h3>
-              <p>2026 年 4 月 14 日，初音未来 V6 正式发布。新的章节继续打开，声音的未来仍在书写。</p>
-            </div>
-          </article>
+      <div class="rail-shell reveal">
+        <div class="wrap rail-tabs">
+          <div class="seg seg--rail" role="group" aria-label="切换时间线内容">
+            <button type="button" class="seg-btn is-active" data-rail-tab="versions" aria-pressed="true" aria-controls="timelineRail">版本</button>
+            <button type="button" class="seg-btn" data-rail-tab="live" aria-pressed="false" aria-controls="liveRail">现场</button>
+          </div>
+          <span class="rail-tab-note mono" id="railPanelNote">SOFTWARE / 2007 — 2026</span>
         </div>
-        <p class="timeline-source mono reveal">TIMELINE BASED ON OFFICIAL PIAPRO CHARACTER INFORMATION · <a href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">SOURCE ↗</a></p>
-        <aside class="anniversary-callout reveal" aria-label="2027 年二十周年纪念节点">
-          <div class="anniversary-date"><span class="mono">NEXT MILESTONE</span><strong>20<span>TH</span></strong><small>2027 / 08 / 31</small></div>
-          <div class="anniversary-copy"><span class="mono">A NEW CHAPTER AWAITS</span><h3>二十年，不是终点。</h3><p>2027 年 8 月 31 日，初音未来将迎来软件诞生二十周年。那些由创作者接续写下的旋律，仍会把故事带向更远的地方。</p></div>
-          <div class="anniversary-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="wrap rail-wrap">
+          <div class="rail" id="timelineRail" data-rail-panel="versions" tabindex="0" role="group" aria-label="初音未来软件版本时间线，可横向滚动">
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">01</span><span class="t-year">2007</span></div>
+              <div class="t-body"><span class="t-tag">THE FIRST VOICE</span><h3>她第一次开口</h3><p>《VOCALOID2 初音未来》8 月 31 日发售。Crypton 只按「小众软件」备货，结果几个月就卖断。第一批买它的人，大多不写歌。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">02</span><span class="t-year">2010</span></div>
+              <div class="t-body"><span class="t-tag">NEW EXPRESSIONS</span><h3>同一个声音，六种脾气</h3><p>アペンド（APPEND）发布，一次追加六种声线：Sweet、Dark、Vivid、Light、Solid、Soft。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">03</span><span class="t-year">2013</span></div>
+              <div class="t-body"><span class="t-tag">A NEW GENERATION</span><h3>开始唱英文</h3><p>V3 登场，同时带来英语声库。日语唱惯了的旋律，第一次能用英文唱出来，虽然口音一听就知道是谁。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">04</span><span class="t-year">2016</span></div>
+              <div class="t-body"><span class="t-tag">VOICE EXPANSION</span><h3>连「吼」都能调</h3><p>V4X 加入 Growl 等表现力参数，还支持用真人声音做交叉合成。可以把一句词唱得很轻，也可以唱到撕裂。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">05</span><span class="t-year">2020</span></div>
+              <div class="t-body"><span class="t-tag">A DIFFERENT APPROACH</span><h3>换了一颗引擎</h3><p>不是 VOCALOID 的下一代，是另一条路：NT 用深度学习重做声学模型。引擎换了，声音的来处没换。</p></div>
+            </article>
+            <article class="t-card t-card--current">
+              <div class="t-top"><span class="t-no mono">06</span><span class="t-year">2026</span></div>
+              <div class="t-body"><span class="t-tag">THE STORY CONTINUES</span><h3>第六版</h3><p>4 月 14 日发布。距第一版过去十八年七个月。版本走到第六代，听她的人，也换了几代。</p></div>
+            </article>
+          </div>
+
+          <div class="rail" id="liveRail" data-rail-panel="live" tabindex="0" role="group" aria-label="初音未来现场演出时间线，可横向滚动" hidden>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">01</span><span class="t-year">2009</span></div>
+              <div class="t-body"><span class="t-tag">THE FIRST LIVE</span><h3>第一次站上舞台</h3><p>MIKUFES'09。她还不是主角，只是和写歌的人同台的一次尝试。台下的人比她紧张。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">02</span><span class="t-year">2010</span></div>
+              <div class="t-body"><span class="t-tag">39'S GIVING DAY</span><h3>三月九日</h3><p>半全息投影，真人乐队在侧后方。门票售罄得很快——那时没人确定，看一块屏幕算不算看演出。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">03</span><span class="t-year">2011</span></div>
+              <div class="t-body"><span class="t-tag">GOING ABROAD</span><h3>她第一次出国</h3><p>东京、札幌、新加坡。行李是硬盘，随行的是调声师和一支乐队。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">04</span><span class="t-year">2013</span></div>
+              <div class="t-body"><span class="t-tag">ANNUAL SUMMER</span><h3>固定的夏天</h3><p>8 月 30 日，横滨。マジカルミライ 从这一年开始，此后每年一次，像一个不必约定的约。</p></div>
+            </article>
+            <article class="t-card">
+              <div class="t-top"><span class="t-no mono">05</span><span class="t-year">2014</span></div>
+              <div class="t-body"><span class="t-tag">WORLD TOUR</span><h3>巡演开始</h3><p>雅加达、洛杉矶、纽约。MIKU EXPO 把同一套灯光搬到不同语言的城市，歌词还是日语。</p></div>
+            </article>
+            <article class="t-card t-card--current">
+              <div class="t-top"><span class="t-no mono">06</span><span class="t-year">2020</span></div>
+              <div class="t-body"><span class="t-tag">ONLINE</span><h3>屏幕里的两年</h3><p>剧场关灯，演出搬上线。荧光棒换成了家里的一盏台灯，弹幕替了合唱。</p></div>
+            </article>
+          </div>
+        </div>
+        <div class="wrap rail-controls">
+          <div class="rail-track" aria-hidden="true"><span class="rail-fill" id="railFill"></span></div>
+          <div class="rail-nav">
+            <span class="rail-hint mono">01 — 06 / 可拖动</span>
+            <button class="rail-btn" type="button" data-rail="-1" aria-label="上一段历史">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H4M7.5 4 3.5 8l4 4"/></svg>
+            </button>
+            <button class="rail-btn" type="button" data-rail="1" aria-label="下一段历史">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <aside class="milestone reveal" aria-label="2027 年二十周年纪念节点">
+          <div class="milestone-date">
+            <span class="mono">NEXT MILESTONE</span>
+            <strong>20<sup>TH</sup></strong>
+            <small class="mono">2027 / 08 / 31</small>
+          </div>
+          <div class="milestone-copy">
+            <h3>她的年龄停在十六岁，<br>听她的人一直在往前走。</h3>
+            <p>2027 年 8 月 31 日，如果按软件的生日算，她就二十岁了。设定里的年龄不会改；每年也都会有新的人，第一次听见她。</p>
+          </div>
+          <span class="milestone-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
         </aside>
+        <p class="source-note reveal">TIMELINE BASED ON PIAPRO CHARACTER INFORMATION<a class="source-link" href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">SOURCE ↗</a></p>
+        <p class="source-foot reveal">※ 年份与参数取自官方公开资料，如有出入以官方为准。</p>
       </div>
     </section>
 
-    <!-- 04 / Creation：从声音长出的不同世界 -->
-    <section class="section creation-section" id="creation" aria-labelledby="creationTitle">
-      <div class="section-wash wash-mint wash-right" aria-hidden="true"></div>
+    <!-- 04 / Songs：十二首歌，十二个坐标 -->
+    <section class="section section--paper" id="songs" aria-labelledby="songsTitle">
       <div class="wrap">
-        <div class="section-heading reveal">
-          <span class="section-number mono">04 / MANY FORMS</span>
-          <span class="section-overline">ONE VOICE, COUNTLESS IMAGINATIONS</span>
-        </div>
-        <div class="creation-heading reveal">
-          <h2 id="creationTitle" class="display-title">同一个名字，<br><span>无数种表达。</span></h2>
-          <p>创作不是沿着一条路抵达终点。它更像一束光，经过不同的人，折射出不同的颜色。</p>
+        <header class="section-head section-head--split reveal">
+          <div>
+            <p class="kicker"><span class="kicker-num">04</span>THE SONGS</p>
+            <h2 id="songsTitle" class="display">十二首歌，<br><span>十二个坐标。</span></h2>
+          </div>
+          <p class="lede">不是榜单，也没有排名。只是十二首绕不过去的歌——每一首都在某个地方，把她的可能性往前推了一点。</p>
+        </header>
+
+        <div class="song-bar reveal">
+          <div class="chips" role="group" aria-label="按年份筛选作品">
+            <button type="button" class="chip is-active" data-era="all" aria-pressed="true">全部 <span class="chip-n">12</span></button>
+            <button type="button" class="chip" data-era="early" aria-pressed="false">2007 — 2009 <span class="chip-n">5</span></button>
+            <button type="button" class="chip" data-era="spread" aria-pressed="false">2010 — 2013 <span class="chip-n">3</span></button>
+            <button type="button" class="chip" data-era="now" aria-pressed="false">2017 — 2021 <span class="chip-n">4</span></button>
+          </div>
+          <p class="result-note mono" id="songCount" aria-live="polite">12 / 12</p>
         </div>
 
-        <div class="creation-grid">
-          <article class="creation-card creation-music reveal">
-            <div class="creation-card-top"><span class="mono">01 / MUSIC</span><span class="card-index">音</span></div>
-            <div class="creation-visual music-visual" aria-hidden="true">
-              <svg viewBox="0 0 360 180" role="presentation">
-                <path class="music-wave wave-1" d="M0 91 C24 91 22 40 45 40 S68 140 90 140 112 61 135 61 157 113 180 113 202 31 225 31 247 132 270 132 292 72 315 72 337 91 360 91"/>
-                <path class="music-wave wave-2" d="M0 91 C24 91 22 69 45 69 S68 114 90 114 112 76 135 76 157 102 180 102 202 57 225 57 247 114 270 114 292 82 315 82 337 91 360 91"/>
-                <circle cx="45" cy="40" r="4"/><circle cx="225" cy="31" r="4"/><circle cx="315" cy="72" r="3"/>
+        <ol class="song-list">
+          <li class="song reveal" data-era="early">
+            <span class="song-year mono">2007</span>
+            <div class="song-main"><h3>メルト</h3><p class="song-by">ryo</p></div>
+            <p class="song-note">在她还只会念音节的时候，这首歌第一次让她听起来像在唱。</p>
+          </li>
+          <li class="song reveal" data-era="early" data-delay="40">
+            <span class="song-year mono">2007</span>
+            <div class="song-main"><h3>初音ミクの消失</h3><p class="song-by">cosMo@暴走P</p></div>
+            <p class="song-note">把软件的速度上限写成歌，唱到自己都跟不上。</p>
+          </li>
+          <li class="song reveal" data-era="early" data-delay="80">
+            <span class="song-year mono">2008</span>
+            <div class="song-main"><h3>ワールドイズマイン</h3><p class="song-by">ryo</p></div>
+            <p class="song-note">第一次给她安上脾气：任性、骄傲，又怕被丢下。</p>
+          </li>
+          <li class="song reveal" data-era="early" data-delay="120">
+            <span class="song-year mono">2009</span>
+            <div class="song-main"><h3>炉心融解</h3><p class="song-by">iroha</p></div>
+            <p class="song-note">明亮的旋律配熔化的词，反差从这首开始成了一种手法。</p>
+          </li>
+          <li class="song reveal" data-era="early" data-delay="160">
+            <span class="song-year mono">2009</span>
+            <div class="song-main"><h3>裏表ラバーズ</h3><p class="song-by">wowaka</p></div>
+            <p class="song-note">词和节拍一起失控，听众第一次被信息量推着往前跑。</p>
+          </li>
+          <li class="song reveal" data-era="spread">
+            <span class="song-year mono">2010</span>
+            <div class="song-main"><h3>マトリョシカ</h3><p class="song-by">ハチ</p></div>
+            <p class="song-note">童谣、拍手、不安，一层套一层，像那只娃娃。</p>
+          </li>
+          <li class="song reveal" data-era="spread" data-delay="40">
+            <span class="song-year mono">2011</span>
+            <div class="song-main"><h3>千本桜</h3><p class="song-by">黒うさP</p></div>
+            <p class="song-note">和风摇滚加之大正浪漫的影像，把她送进了卡拉 OK 的点唱榜。</p>
+          </li>
+          <li class="song reveal" data-era="spread" data-delay="80">
+            <span class="song-year mono">2012</span>
+            <div class="song-main"><h3>ODDS&amp;ENDS</h3><p class="song-by">ryo</p></div>
+            <p class="song-note">写给创作者自己：才华、失败，还有不肯停下的那部分。</p>
+          </li>
+          <li class="song reveal" data-era="now">
+            <span class="song-year mono">2017</span>
+            <div class="song-main"><h3>砂の惑星</h3><p class="song-by">ハチ</p></div>
+            <p class="song-note">十年节点上的回望，把当初的热闹写成一片沙。</p>
+          </li>
+          <li class="song reveal" data-era="now" data-delay="40">
+            <span class="song-year mono">2018</span>
+            <div class="song-main"><h3>ロキ</h3><p class="song-by">みきとP</p></div>
+            <p class="song-note">两个人的对话：一个不肯认输，一个懒得解释。</p>
+          </li>
+          <li class="song reveal" data-era="now" data-delay="80">
+            <span class="song-year mono">2020</span>
+            <div class="song-main"><h3>グッバイ宣言</h3><p class="song-by">Chinozo</p></div>
+            <p class="song-note">短视频时代的一次意外：一首「再见」，让新的听众重新找到她。</p>
+          </li>
+          <li class="song reveal" data-era="now" data-delay="120">
+            <span class="song-year mono">2021</span>
+            <div class="song-main"><h3>ヴァンパイア</h3><p class="song-by">DECO*27</p></div>
+            <p class="song-note">把「离不开」写成甜而危险的东西，副歌一响就留在脑子里。</p>
+          </li>
+        </ol>
+
+        <p class="source-foot reveal">※ 投稿年份以 niconico 动画上的公开记录为准。此处不附音频与外链，也不做推荐排序。</p>
+      </div>
+    </section>
+
+    <!-- 05 / Creation：从声音长出的不同世界 -->
+    <section class="section section--paper" id="creation" aria-labelledby="creationTitle">
+      <div class="wrap">
+        <header class="section-head section-head--center reveal">
+          <p class="kicker"><span class="kicker-num">05</span>MANY FORMS</p>
+          <h2 id="creationTitle" class="display">一个名字，<br><span>被画成很多种样子。</span></h2>
+          <p class="lede">同一段声音，被四种人接走：写歌的、画画的、剪视频的、搭舞台的。彼此不一定认识，作品却常常撞在一起。</p>
+        </header>
+
+        <div class="bento">
+          <article class="card card--wide reveal">
+            <div class="card-cover cover-music">
+              <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <linearGradient id="mBg" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f2fbf8"/><stop offset=".5" stop-color="#e2f4ef"/><stop offset="1" stop-color="#fceff3"/>
+                  </linearGradient>
+                  <linearGradient id="mBand" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#9fe4da" stop-opacity=".15"/>
+                    <stop offset=".45" stop-color="#3cc0b4" stop-opacity=".42"/>
+                    <stop offset="1" stop-color="#e9c3d1" stop-opacity=".22"/>
+                  </linearGradient>
+                  <linearGradient id="mLine" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#9fdcd4"/><stop offset=".38" stop-color="#0c6e67"/><stop offset=".78" stop-color="#2aa79c"/><stop offset="1" stop-color="#e0b3c4"/>
+                  </linearGradient>
+                </defs>
+                <rect width="600" height="400" fill="url(#mBg)"/>
+                <path d="M0 400 L0 286 Q 70 196 140 286 T 280 286 T 420 286 T 560 286 L600 286 L600 400 Z" fill="url(#mBand)"/>
+                <path d="M0 400 L0 316 Q 70 226 140 316 T 280 316 T 420 316 T 560 316 L600 316 L600 400 Z" fill="url(#mBand)" opacity=".8"/>
+                <path d="M0 262 Q 70 172 140 262 T 280 262 T 420 262 T 560 262 T 700 262" fill="none" stroke="url(#mLine)" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M0 300 Q 70 210 140 300 T 280 300 T 420 300 T 560 300 T 700 300" fill="none" stroke="#c98ba0" stroke-width="1.2" stroke-dasharray="3 8" opacity=".55"/>
+                <circle cx="140" cy="262" r="5" fill="#0c6e67"/><circle cx="350" cy="262" r="4" fill="#2aa79c"/><circle cx="500" cy="262" r="3.5" fill="#c98ba0"/>
+                <circle cx="140" cy="262" r="14" fill="#0c6e67" opacity=".1"/><circle cx="350" cy="262" r="12" fill="#2aa79c" opacity=".12"/>
               </svg>
             </div>
-            <div class="creation-card-copy"><h3>音乐</h3><p>一段旋律，从耳机里出发，去往陌生人的日常。</p></div>
+            <div class="card-meta"><span class="mono">01 / MUSIC</span><span class="card-cn">音</span></div>
+            <h3 class="card-title">音乐</h3>
+            <p class="card-text">半夜随机播到的那首，副歌你只记得三个字。</p>
           </article>
-          <article class="creation-card creation-art reveal" data-delay="80">
-            <div class="creation-card-top"><span class="mono">02 / ILLUSTRATION</span><span class="card-index">画</span></div>
-            <div class="creation-visual art-visual" aria-hidden="true">
-              <div class="art-sun"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-line"></div><span class="art-star star-one">✳</span><span class="art-star star-two">✳</span>
+
+          <article class="card reveal" data-delay="70">
+            <div class="card-cover cover-art">
+              <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <radialGradient id="aBg" cx=".3" cy=".25" r=".9">
+                    <stop offset="0" stop-color="#fff6f8"/><stop offset=".55" stop-color="#fbe8ee"/><stop offset="1" stop-color="#eef7f4"/>
+                  </radialGradient>
+                  <linearGradient id="aC1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f7b8cb" stop-opacity=".78"/><stop offset="1" stop-color="#f4d3dd" stop-opacity=".38"/>
+                  </linearGradient>
+                  <linearGradient id="aC2" x1="1" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#63cfc3" stop-opacity=".66"/><stop offset="1" stop-color="#bfe9e2" stop-opacity=".3"/>
+                  </linearGradient>
+                </defs>
+                <rect width="600" height="400" fill="url(#aBg)"/>
+                <circle cx="404" cy="152" r="132" fill="url(#aC1)"/>
+                <circle cx="286" cy="268" r="116" fill="url(#aC2)"/>
+                <circle cx="196" cy="140" r="74" fill="#fdfaf6" opacity=".8"/>
+                <ellipse cx="300" cy="200" rx="236" ry="96" fill="none" stroke="#0c6e67" stroke-width="1" opacity=".32" transform="rotate(-24 300 200)"/>
+                <ellipse cx="300" cy="200" rx="196" ry="150" fill="none" stroke="#c98ba0" stroke-width="1" opacity=".34" transform="rotate(28 300 200)"/>
+                <circle cx="300" cy="200" r="5" fill="#0c6e67"/>
+                <path d="M128 96 l10 20 20 10 -20 10 -10 20 -10 -20 -20 -10 20 -10 Z" fill="#c98ba0" opacity=".7"/>
+                <path d="M476 300 l6 12 12 6 -12 6 -6 12 -6 -12 -12 -6 12 -6 Z" fill="#0c6e67" opacity=".5"/>
+              </svg>
             </div>
-            <div class="creation-card-copy"><h3>插画</h3><p>一抹颜色、一条线条，让想象拥有自己的形状。</p></div>
+            <div class="card-meta"><span class="mono">02 / ILLUSTRATION</span><span class="card-cn">画</span></div>
+            <h3 class="card-title">插画</h3>
+            <p class="card-text">公式服、双马尾、左臂的「01」。谁画都像她，但每个人画的都不一样。</p>
           </article>
-          <article class="creation-card creation-movie reveal" data-delay="160">
-            <div class="creation-card-top"><span class="mono">03 / MOTION</span><span class="card-index">影</span></div>
-            <div class="creation-visual movie-visual" aria-hidden="true">
-              <div class="film-frame frame-a"><i></i><i></i><i></i></div><div class="film-frame frame-b"><i></i><i></i><i></i></div><div class="film-play"><span></span></div>
+
+          <article class="card reveal" data-delay="140">
+            <div class="card-cover cover-motion">
+              <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <linearGradient id="oBg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#0d2321"/><stop offset=".55" stop-color="#123330"/><stop offset="1" stop-color="#081615"/>
+                  </linearGradient>
+                  <linearGradient id="oStreak" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#39c5bb" stop-opacity="0"/>
+                    <stop offset=".4" stop-color="#5fd8cc" stop-opacity=".6"/>
+                    <stop offset="1" stop-color="#f0a0b6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <rect width="600" height="400" fill="url(#oBg)"/>
+                <rect x="0" y="120" width="600" height="2" fill="url(#oStreak)" opacity=".5"/>
+                <rect x="40" y="168" width="520" height="3" fill="url(#oStreak)" opacity=".85"/>
+                <rect x="0" y="212" width="600" height="4" fill="url(#oStreak)" opacity=".65"/>
+                <rect x="90" y="262" width="430" height="2" fill="url(#oStreak)" opacity=".7"/>
+                <rect x="0" y="300" width="600" height="1.5" fill="url(#oStreak)" opacity=".4"/>
+                <circle cx="300" cy="200" r="46" fill="#0b1d1b" opacity=".55"/>
+                <circle cx="300" cy="200" r="46" fill="none" stroke="#8fe6dc" stroke-width="1.2" opacity=".85"/>
+                <path d="M292 184 L318 200 L292 216 Z" fill="#c8f4ee"/>
+                <g fill="#8fe6dc" opacity=".45">
+                  <rect x="18" y="26" width="10" height="10" rx="2"/><rect x="40" y="26" width="10" height="10" rx="2"/>
+                  <rect x="62" y="26" width="10" height="10" rx="2"/><rect x="84" y="26" width="10" height="10" rx="2"/>
+                  <rect x="18" y="366" width="10" height="10" rx="2"/><rect x="40" y="366" width="10" height="10" rx="2"/>
+                  <rect x="62" y="366" width="10" height="10" rx="2"/><rect x="84" y="366" width="10" height="10" rx="2"/>
+                </g>
+              </svg>
             </div>
-            <div class="creation-card-copy"><h3>影像</h3><p>当画面开始运动，时间也有了自己的节拍。</p></div>
+            <div class="card-meta"><span class="mono">03 / MOTION</span><span class="card-cn">影</span></div>
+            <h3 class="card-title">影像</h3>
+            <p class="card-text">一帧一帧地让她眨眼、转身、对口型。三分钟，要画几千张。</p>
           </article>
-          <article class="creation-card creation-stage reveal" data-delay="240">
-            <div class="creation-card-top"><span class="mono">04 / STAGE</span><span class="card-index">光</span></div>
-            <div class="creation-visual stage-visual" aria-hidden="true">
-              <div class="stage-beam beam-a"></div><div class="stage-beam beam-b"></div><div class="stage-floor"></div><div class="stage-orb"></div><div class="stage-star">✧</div>
+
+          <article class="card card--wide reveal" data-delay="210">
+            <div class="card-cover cover-stage">
+              <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <linearGradient id="sBg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#05100f"/><stop offset=".62" stop-color="#0a1f1d"/><stop offset="1" stop-color="#123330"/>
+                  </linearGradient>
+                  <linearGradient id="sCone" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#7fe3d7" stop-opacity=".6"/>
+                    <stop offset=".6" stop-color="#39c5bb" stop-opacity=".18"/>
+                    <stop offset="1" stop-color="#39c5bb" stop-opacity="0"/>
+                  </linearGradient>
+                  <radialGradient id="sGlow" cx=".5" cy=".5" r=".5">
+                    <stop offset="0" stop-color="#a9f0e7" stop-opacity=".95"/>
+                    <stop offset=".45" stop-color="#39c5bb" stop-opacity=".45"/>
+                    <stop offset="1" stop-color="#39c5bb" stop-opacity="0"/>
+                  </radialGradient>
+                  <linearGradient id="sBeam" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f0a0b6" stop-opacity=".5"/><stop offset="1" stop-color="#f0a0b6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <rect width="600" height="400" fill="url(#sBg)"/>
+                <ellipse cx="300" cy="330" rx="240" ry="66" fill="none" stroke="#4fd2c7" stroke-width="1" opacity=".38"/>
+                <ellipse cx="300" cy="318" rx="150" ry="40" fill="none" stroke="#4fd2c7" stroke-width="1" opacity=".26"/>
+                <path d="M258 118 L342 118 L470 322 L130 322 Z" fill="url(#sCone)"/>
+                <path d="M258 118 L296 118 L214 322 L130 322 Z" fill="#ffffff" opacity=".05"/>
+                <path d="M420 88 L462 296 L448 296 L406 88 Z" fill="url(#sBeam)" opacity=".55"/>
+                <circle cx="300" cy="126" r="64" fill="url(#sGlow)" opacity=".55"/>
+                <circle cx="300" cy="126" r="11" fill="#d9fbf5"/>
+                <circle cx="300" cy="126" r="22" fill="none" stroke="#8fe6dc" stroke-width="1" opacity=".6"/>
+                <g fill="#8fe6dc">
+                  <circle cx="188" cy="96" r="2" opacity=".55"/><circle cx="432" cy="132" r="1.6" opacity=".4"/>
+                  <circle cx="112" cy="196" r="1.4" opacity=".35"/><circle cx="500" cy="230" r="2.2" opacity=".45"/>
+                  <circle cx="360" cy="66" r="1.5" opacity=".5"/><circle cx="236" cy="252" r="1.2" opacity=".3"/>
+                </g>
+              </svg>
             </div>
-            <div class="creation-card-copy"><h3>舞台</h3><p>光与节奏交汇，让屏幕内外的人在同一刻相遇。</p></div>
+            <div class="card-meta"><span class="mono">04 / STAGE</span><span class="card-cn">光</span></div>
+            <h3 class="card-title">舞台</h3>
+            <p class="card-text">投影、灯光、真人乐队。她在台上唱，台下几万人跟着合。</p>
           </article>
         </div>
 
-        <div class="creation-note reveal">
-          <span class="note-line"></span>
-          <p>也许你不是制作音乐的人。<br>但你听过、看过、记住过的某一刻，<em>同样属于这段回声。</em></p>
-          <span class="note-mark mono">YOU ARE PART OF THE ECHO</span>
+        <div class="bento-note reveal">
+          <p>你不一定会写歌。<br>但你循环过的那首、存过的那张、在现场喊哑的那晚，<em>也都算数。</em></p>
+          <span class="mono note-mark">YOU ARE PART OF THE ECHO</span>
         </div>
-      </div>
-    </section>
 
-    <!-- 05 / Lab：用户可交互的视觉声场 -->
-    <section class="section lab-section" id="lab" aria-labelledby="labTitle">
-      <div class="lab-background-grid" aria-hidden="true"></div>
-      <div class="wrap">
-        <div class="section-heading reveal">
-          <span class="section-number mono">05 / VISUAL SOUND LAB</span>
-          <span class="section-overline">A SMALL EXPERIMENT IN MOVEMENT</span>
-        </div>
-        <div class="lab-layout">
-          <div class="lab-copy reveal">
-            <h2 id="labTitle" class="display-title">让声音<br><span>拥有形状。</span></h2>
-            <p>试着改变波动与密度，看看同一段抽象的声音，可以呈现出怎样不同的面貌。</p>
-            <p class="lab-disclaimer">这是由代码生成的视觉声纹，不会播放或上传任何音频。</p>
-            <div class="lab-controls">
-              <div class="control-group">
-                <div class="control-heading"><label for="waveAmount">波动幅度</label><output id="waveAmountValue" for="waveAmount">58</output></div>
-                <input id="waveAmount" type="range" min="12" max="100" value="58">
-              </div>
-              <div class="control-group">
-                <div class="control-heading"><label for="waveDensity">声纹密度</label><output id="waveDensityValue" for="waveDensity">48</output></div>
-                <input id="waveDensity" type="range" min="12" max="100" value="48">
-              </div>
-              <button class="reset-button" id="resetLab" type="button">重置实验参数 <span aria-hidden="true">↺</span></button>
+        <div class="people" id="people">
+          <header class="people-head reveal">
+            <p class="kicker"><span class="kicker-num">05/B</span>THE PEOPLE</p>
+            <h3 class="people-title">把声音接过去的人</h3>
+            <p class="people-lede">她不会写、不会画、不会跳。下面这些人各自接走一段，再还回来一个作品——名单很短，只是举几个例子。</p>
+          </header>
+
+          <div class="people-bar reveal">
+            <div class="chips" role="group" aria-label="按身份筛选创作者">
+              <button type="button" class="chip is-active" data-role-filter="all" aria-pressed="true">全部 <span class="chip-n">10</span></button>
+              <button type="button" class="chip" data-role-filter="music" aria-pressed="false">写歌 <span class="chip-n">8</span></button>
+              <button type="button" class="chip" data-role-filter="art" aria-pressed="false">画她 <span class="chip-n">2</span></button>
             </div>
+            <p class="result-note mono" id="peopleCount" aria-live="polite">10 / 10</p>
           </div>
-          <div class="lab-instrument reveal" data-delay="140">
-            <div class="instrument-top"><span class="mono">LIVE VISUALIZATION</span><span class="instrument-state"><i></i> ACTIVE</span></div>
-            <div class="visualizer-wrap">
-              <canvas id="soundCanvas" width="900" height="520" role="img" aria-label="抽象声纹可视化。可通过波动幅度、声纹密度与模式控制调整图形。"></canvas>
-              <div class="visualizer-crosshair" aria-hidden="true"></div>
-              <span class="visualizer-axis axis-left mono">+1.0</span><span class="visualizer-axis axis-right mono">-1.0</span>
+
+          <ul class="people-list">
+            <li class="person reveal" data-role="music">
+              <span class="person-no mono">01</span>
+              <div class="person-body">
+                <h4>ryo <span>supercell</span></h4>
+                <p>用三首歌证明她可以唱流行乐，然后转身去做自己的乐队。留下的旋律，至今还是很多人认识她的第一步。</p>
+                <p class="person-works mono">メルト · ワールドイズマイン · ODDS&amp;ENDS</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="40">
+              <span class="person-no mono">02</span>
+              <div class="person-body">
+                <h4>livetune <span>kz</span></h4>
+                <p>把电子音色和她贴在一起，做出第一批「像唱片」的作品。听感从这儿开始，不再只是软件演示。</p>
+                <p class="person-works mono">Packaged · Last Night, Good Night</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="80">
+              <span class="person-no mono">03</span>
+              <div class="person-body">
+                <h4>wowaka</h4>
+                <p>把焦虑直接做成节拍，词密到喘不过气。2019 年他离开，歌还在被一遍遍翻唱。</p>
+                <p class="person-works mono">裏表ラバーズ · ローリンガール · アンハッピーリフレイン</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="120">
+              <span class="person-no mono">04</span>
+              <div class="person-body">
+                <h4>ハチ <span>米津玄師</span></h4>
+                <p>用她唱童谣、怪物和不安，画面也自己画。后来他用自己的嗓子继续唱，起点仍写在这里。</p>
+                <p class="person-works mono">マトリョシカ · 砂の惑星</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music">
+              <span class="person-no mono">05</span>
+              <div class="person-body">
+                <h4>DECO*27</h4>
+                <p>最会把「关系」写成副歌的人之一。甜、黏、有点危险，听完一遍就赖在脑子里。</p>
+                <p class="person-works mono">ヴァンパイア · ゴーストルール</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="40">
+              <span class="person-no mono">06</span>
+              <div class="person-body">
+                <h4>Mitchie M</h4>
+                <p>调声细到听不出机械感，换气、滑音都像真人在唱。很多人是靠他相信「她可以很像人」。</p>
+                <p class="person-works mono">FREELY TOMORROW · 大江戸ジュリアナイト</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="80">
+              <span class="person-no mono">07</span>
+              <div class="person-body">
+                <h4>sasakure.UK</h4>
+                <p>游戏音、电子、叙事，全塞进三分钟。他的歌像一台坏掉但舍不得丢的八音盒。</p>
+                <p class="person-works mono">＊ハロー、プラネット。 · 39</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="music" data-delay="120">
+              <span class="person-no mono">08</span>
+              <div class="person-body">
+                <h4>黒うさP</h4>
+                <p>一首千本桜，让和风摇滚成了她的常用语。此后很多歌里的三味线与吉他，都在回应它。</p>
+                <p class="person-works mono">千本桜</p>
+              </div>
+              <span class="person-tag mono">SONG</span>
+            </li>
+            <li class="person reveal" data-role="art">
+              <span class="person-no mono">09</span>
+              <div class="person-body">
+                <h4>KEI</h4>
+                <p>画出最初的双马尾与公式服。之后每一个版本、每一张同人，其实都在回应这张图。</p>
+                <p class="person-works mono">2007 / CHARACTER DESIGN</p>
+              </div>
+              <span class="person-tag mono">ART</span>
+            </li>
+            <li class="person reveal" data-role="art" data-delay="40">
+              <span class="person-no mono">10</span>
+              <div class="person-body">
+                <h4>iXima</h4>
+                <p>V3 起的主视觉。她把五官和光线重新校准，让这张脸在十年里保持连续。</p>
+                <p class="person-works mono">2013 / KEY VISUAL</p>
+              </div>
+              <span class="person-tag mono">ART</span>
+            </li>
+          </ul>
+
+          <p class="source-foot reveal">※ 名单按介入时间排列，不完整。想找完整名单，官方资料比这里全得多。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 / Lab：用户可交互的视觉声场 -->
+    <section class="section section--dark" id="lab" aria-labelledby="labTitle">
+      <div class="wrap lab-grid">
+        <div class="lab-copy reveal">
+          <p class="kicker kicker--dark"><span class="kicker-num">06</span>VISUAL SOUND LAB</p>
+          <h2 id="labTitle" class="display">让声音<br><span>拥有形状。</span></h2>
+          <p class="lab-lede">没有音频，也没有上传。<br>图形由代码现算，拖滑块就能改。</p>
+          <div class="controls">
+            <div class="control">
+              <div class="control-row"><label for="waveAmount">波动幅度</label><output id="waveAmountValue" for="waveAmount">58</output></div>
+              <input id="waveAmount" type="range" min="12" max="100" value="58">
             </div>
-            <div class="instrument-bottom"><span id="visualModeLabel">SINE / FLOW FIELD</span><span id="visualReadout">A 058 · D 048</span></div>
-            <div class="mode-switch" role="group" aria-label="选择声纹样式">
-              <button type="button" class="mode-button is-active" data-mode="wave" aria-pressed="true">WAVE</button>
-              <button type="button" class="mode-button" data-mode="ring" aria-pressed="false">RING</button>
-              <button type="button" class="mode-button" data-mode="spectrum" aria-pressed="false">SPECTRUM</button>
+            <div class="control">
+              <div class="control-row"><label for="waveDensity">声纹密度</label><output id="waveDensityValue" for="waveDensity">48</output></div>
+              <input id="waveDensity" type="range" min="12" max="100" value="48">
             </div>
+            <button class="reset-btn" id="resetLab" type="button">重置实验参数 <span aria-hidden="true">↺</span></button>
+          </div>
+          <p class="lab-note">图形由代码实时计算，不播放、也不上传任何音频。</p>
+        </div>
+
+        <div class="panel reveal" data-delay="120">
+          <div class="panel-top">
+            <span class="mono">LIVE VISUALIZATION</span>
+            <span class="panel-state"><i aria-hidden="true"></i>ACTIVE</span>
+          </div>
+          <div class="viz-wrap">
+            <canvas id="soundCanvas" width="900" height="520" role="img" aria-label="抽象声纹可视化。可通过波动幅度、声纹密度与模式切换调整图形。"></canvas>
+            <span class="viz-axis axis-tl mono">+1.0</span>
+            <span class="viz-axis axis-br mono">-1.0</span>
+          </div>
+          <div class="panel-bottom">
+            <span class="mono" id="visualModeLabel">波形 / FLOW FIELD</span>
+            <span class="mono" id="visualReadout">A 058 · D 048</span>
+          </div>
+          <div class="seg" role="group" aria-label="选择声纹样式">
+            <button type="button" class="seg-btn is-active" data-mode="wave" aria-pressed="true">波形</button>
+            <button type="button" class="seg-btn" data-mode="ring" aria-pressed="false">环状</button>
+            <button type="button" class="seg-btn" data-mode="spectrum" aria-pressed="false">频谱</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 06 / The loop：创作循环 -->
-    <section class="section loop-section" aria-labelledby="loopTitle">
-      <div class="section-wash wash-pink wash-low" aria-hidden="true"></div>
+    <!-- 07 / The loop：创作循环 -->
+    <section class="section section--tint" aria-labelledby="loopTitle">
       <div class="wrap">
-        <div class="section-heading reveal">
-          <span class="section-number mono">06 / THE CREATIVE LOOP</span>
-          <span class="section-overline">IT NEVER REALLY ENDS</span>
-        </div>
-        <div class="loop-heading reveal">
-          <h2 id="loopTitle" class="display-title">一段声音的<br><span>下一次相遇。</span></h2>
-          <p>听见、想象、创作、分享。每一次抵达，都可能成为另一个人的起点。</p>
-        </div>
-        <div class="loop-track">
-          <article class="loop-step reveal"><span class="loop-no mono">01</span><div class="loop-icon icon-listen" aria-hidden="true"><span></span><span></span><span></span><span></span></div><h3>听见</h3><p>某个音符，在某个瞬间停留。</p></article>
-          <div class="loop-arrow" aria-hidden="true">→</div>
-          <article class="loop-step reveal" data-delay="90"><span class="loop-no mono">02</span><div class="loop-icon icon-imagine" aria-hidden="true"><i></i><i></i><i></i></div><h3>想象</h3><p>它在脑海里，长成新的模样。</p></article>
-          <div class="loop-arrow" aria-hidden="true">→</div>
-          <article class="loop-step reveal" data-delay="180"><span class="loop-no mono">03</span><div class="loop-icon icon-create" aria-hidden="true"><span></span><span></span><span></span></div><h3>创作</h3><p>把还不存在的事物，慢慢完成。</p></article>
-          <div class="loop-arrow" aria-hidden="true">→</div>
-          <article class="loop-step reveal" data-delay="270"><span class="loop-no mono">04</span><div class="loop-icon icon-share" aria-hidden="true"><i></i><i></i><i></i></div><h3>分享</h3><p>让作品启程，再遇见新的听众。</p></article>
-        </div>
-        <div class="loop-return mono reveal"><span></span> AND THE NEXT STORY BEGINS <span></span></div>
+        <header class="section-head section-head--split reveal">
+          <div>
+            <p class="kicker"><span class="kicker-num">07</span>THE CREATIVE LOOP</p>
+            <h2 id="loopTitle" class="display">一段声音，<br><span>怎样遇见下一个人。</span></h2>
+          </div>
+          <p class="lede">这条链没有终点。有人交出一首歌，另一个人在半年后听见，然后交出自己的。</p>
+        </header>
+
+        <ol class="loop-grid">
+          <li class="loop-step reveal">
+            <span class="loop-no mono">01</span>
+            <span class="loop-icon icon-listen" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            <h3>听见</h3>
+            <p>深夜，随机播放，第三首的前奏。</p>
+          </li>
+          <li class="loop-step reveal" data-delay="80">
+            <span class="loop-no mono">02</span>
+            <span class="loop-icon icon-imagine" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h3>想象</h3>
+            <p>你已经在想：换成木吉他会是什么样。</p>
+          </li>
+          <li class="loop-step reveal" data-delay="160">
+            <span class="loop-no mono">03</span>
+            <span class="loop-icon icon-create" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h3>创作</h3>
+            <p>于是真的下了软件，熬到凌晨四点。</p>
+          </li>
+          <li class="loop-step reveal" data-delay="240">
+            <span class="loop-no mono">04</span>
+            <span class="loop-icon" aria-hidden="true">
+              <svg class="icon-share" viewBox="0 0 24 24"><circle cx="6.5" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.6 10.9 15.4 7.1M8.6 13.1l6.8 3.8"/></svg>
+            </span>
+            <h3>分享</h3>
+            <p>上传。第二天播放量 12，三年后十万。</p>
+          </li>
+        </ol>
+        <p class="loop-return mono reveal"><span aria-hidden="true"></span>AND THE NEXT STORY BEGINS<span aria-hidden="true"></span></p>
       </div>
     </section>
 
-    <!-- 07 / Message：本地保存的个人留言 -->
-    <section class="section message-section" id="message" aria-labelledby="messageTitle">
-      <div class="message-glow" aria-hidden="true"></div>
-      <div class="wrap message-wrap">
-        <div class="message-text reveal">
-          <div class="section-heading"><span class="section-number mono">07 / A NOTE TO TOMORROW</span></div>
-          <h2 id="messageTitle" class="display-title">留一句话，<br>给<span>未来的声音。</span></h2>
-          <p>写下一句此刻想留下的话。它不必完整，也不必被谁看见。就像一段尚未完成的旋律，先让它在这里安静地停一会儿。</p>
-          <button class="inspiration-button" id="inspirationButton" type="button"><span>给我一点灵感</span><b aria-hidden="true">✳</b></button>
-          <p class="inspiration-output" id="inspirationOutput" aria-live="polite">“下一段旋律，会从哪里开始？”</p>
+    <!-- 08 / Glossary：读她之前先认几个词 -->
+    <section class="section section--paper" id="glossary" aria-labelledby="glossaryTitle">
+      <div class="wrap">
+        <header class="section-head section-head--split reveal">
+          <div>
+            <p class="kicker"><span class="kicker-num">08</span>THE GLOSSARY</p>
+            <h2 id="glossaryTitle" class="display">先认几个词，<br><span>再往下听。</span></h2>
+          </div>
+          <p class="lede">这些词会反复出现。挑想知道的点开，其余略过也不影响阅读。</p>
+        </header>
+
+        <div class="gloss-bar reveal">
+          <div class="chips" role="group" aria-label="按类别筛选词条">
+            <button type="button" class="chip is-active" data-gloss="all" aria-pressed="true">全部 <span class="chip-n">16</span></button>
+            <button type="button" class="chip" data-gloss="sound" aria-pressed="false">声音 <span class="chip-n">5</span></button>
+            <button type="button" class="chip" data-gloss="place" aria-pressed="false">平台与工具 <span class="chip-n">5</span></button>
+            <button type="button" class="chip" data-gloss="word" aria-pressed="false">说法与场合 <span class="chip-n">6</span></button>
+          </div>
+          <div class="gloss-actions">
+            <span class="result-note mono" id="glossCount" aria-live="polite">16 / 16</span>
+            <button class="gloss-toggle" id="glossToggle" type="button" aria-expanded="false">全部展开</button>
+          </div>
         </div>
-        <form class="note-card reveal" id="noteForm" data-delay="120">
-          <div class="note-card-header"><span class="mono">PERSONAL NOTE / 001</span><span class="note-live"><i></i> LOCAL ONLY</span></div>
+
+        <div class="gloss-grid">
+          <details class="gloss reveal" data-gloss="sound">
+            <summary><span class="gloss-key">VOCALOID</span><span class="gloss-cat mono">ENGINE</span></summary>
+            <p>雅马哈的歌声合成技术。你给它音高和歌词，它把录好的声音切片拼成唱句。2007 年那一版，是她最初待的地方。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="sound" data-delay="40">
+            <summary><span class="gloss-key">声库</span><span class="gloss-cat mono">VOICE BANK</span></summary>
+            <p>一个角色的「嗓子」数据。同一套软件，换一份声库就是换一个人；换一版声库，同一个人也会听起来不一样。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="sound" data-delay="80">
+            <summary><span class="gloss-key">调声</span><span class="gloss-cat mono">TUNING</span></summary>
+            <p>调整音高曲线、颤音、换气的位置。同一句话，调法不同就是两种情绪——这也是为什么同一首翻调能听出不同性格。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="sound" data-delay="120">
+            <summary><span class="gloss-key">NT</span><span class="gloss-cat mono">NEW ENGINE</span></summary>
+            <p>2020 年启用的新引擎，用深度学习重做声学模型，不再靠拼接切片。声音更连贯，也更容易被调得像真人。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="sound">
+            <summary><span class="gloss-key">UTAU</span><span class="gloss-cat mono">FREE TOOL</span></summary>
+            <p>另一套免费的歌声合成软件。谁都可以录一套自己的声库放进去——很多人第一次「拥有一个会唱歌的声音」，是从这里开始的。</p>
+          </details>
+
+          <details class="gloss reveal" data-gloss="place">
+            <summary><span class="gloss-key">ニコニコ動画</span><span class="gloss-cat mono">PLATFORM</span></summary>
+            <p>日本的视频站。2007 年那批歌几乎都从这里开始，弹幕文化也从这里长出来：歌词飘过屏幕，听众在同一个时间点一起说话。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="place" data-delay="40">
+            <summary><span class="gloss-key">Piapro</span><span class="gloss-cat mono">PLATFORM</span></summary>
+            <p>Crypton 的创作平台。二创发布、授权说明、素材与规则都在这里，也是理解「什么能做、什么不能做」最直接的地方。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="place" data-delay="80">
+            <summary><span class="gloss-key">Project DIVA</span><span class="gloss-cat mono">GAME</span></summary>
+            <p>SEGA 的音乐游戏系列。很多人先认识游戏，再认识她；也有一批人是先在游戏里听见某首歌，才回头找到投稿。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="place" data-delay="120">
+            <summary><span class="gloss-key">MMD</span><span class="gloss-cat mono">3D TOOL</span></summary>
+            <p>MikuMikuDance，免费的 3D 动画软件。大量舞蹈视频出自这里，也是许多人第一次让她「动起来」的方式。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="place">
+            <summary><span class="gloss-key">YouTube</span><span class="gloss-cat mono">PLATFORM</span></summary>
+            <p>后来的主战场。同一首歌在这里有另一批听众，评论区也换了一种语言——但对副歌的反应通常是一样的。</p>
+          </details>
+
+          <details class="gloss reveal" data-gloss="word">
+            <summary><span class="gloss-key">传说曲</span><span class="gloss-cat mono">MILESTONE</span></summary>
+            <p>播放破十万的曲子。在当年，这是一个很实在的门槛：说明它不只是被朋友点开过一次。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="word" data-delay="40">
+            <summary><span class="gloss-key">神话曲</span><span class="gloss-cat mono">MILESTONE</span></summary>
+            <p>播放破一千万。到 2026 年，拿到这个数字的歌仍然不多，每一首都值得单独说一次。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="word" data-delay="80">
+            <summary><span class="gloss-key">39</span><span class="gloss-cat mono">WORDPLAY</span></summary>
+            <p>读作 san-kyu，也就是 thank you。它同时是她的编号、3 月 9 日，以及演唱会结束时台下会一起喊的音。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="word" data-delay="120">
+            <summary><span class="gloss-key">ボカロ</span><span class="gloss-cat mono">SLANG</span></summary>
+            <p>圈内对这类歌、这些创作者和整片文化的简称。它指的不只是软件，更像一个持续了快二十年的场景。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="word">
+            <summary><span class="gloss-key">雪初音</span><span class="gloss-cat mono">ANOTHER LOOK</span></summary>
+            <p>2010 年起为札幌雪祭设计的另一套形象，每年换一次。冬天、雪、白色，是她的另一条时间线。</p>
+          </details>
+          <details class="gloss reveal" data-gloss="word" data-delay="40">
+            <summary><span class="gloss-key">マジカルミライ</span><span class="gloss-cat mono">EVENT</span></summary>
+            <p>2013 年起每年一次的演出与展览。夏天、幕张、荧光棒——对很多人来说，那是一年里唯一一次「见到她」。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 / Boundary：非商业声明 -->
+    <section class="section section--tint" id="boundary" aria-labelledby="boundaryTitle">
+      <div class="wrap boundary">
+        <header class="boundary-head reveal">
+          <p class="kicker"><span class="kicker-num">09</span>NOT FOR SALE</p>
+          <h2 id="boundaryTitle" class="display">这里不卖东西。</h2>
+          <p class="boundary-lede">域名带 .shop，但没有购物车、没有广告位、没有「立即购买」。这一页只是把话说清楚。</p>
+        </header>
+
+        <div class="boundary-grid">
+          <div class="boundary-col reveal">
+            <h3>本站是什么</h3>
+            <p>一个人做的非官方页面。文字与图形是本站的原创表达，角色名称及相关权利归权利人所有。不代言，也不代表任何官方立场。</p>
+            <p>没有广告、没有赞助、没有联盟链接、没有打赏入口、没有付费内容。也不埋统计脚本。</p>
+          </div>
+          <div class="boundary-col reveal" data-delay="80">
+            <h3>你可以带走什么</h3>
+            <p>一些看法、一些年份、几个词的意思，以及一段可以自己接着写下去的想法。留言只存在你自己的浏览器里，换台设备就没了。</p>
+            <p>这里不提供音频下载，也不转载别人的作品。想听歌，请去创作者自己发布的地方。</p>
+          </div>
+          <div class="boundary-col reveal" data-delay="160">
+            <h3>二创的边界</h3>
+            <p>Crypton 对非营利、不收取对价的同人创作有明确授权（PCL）：不用申请，遵守规范即可。涉及成本回收要走 Piapro Link 备案；商业用途必须另行取得许可。</p>
+            <p>不该做的几件事：拿角色做广告或代言、冒充官方、把别人的二创当成自己的、改动到损害角色形象。</p>
+          </div>
+        </div>
+
+        <p class="boundary-foot reveal">喜欢一样东西，不必把它变成生意。<span class="mono">NON-COMMERCIAL · NON-OFFICIAL · NO TRACKING</span></p>
+      </div>
+    </section>
+
+    <!-- 10 / Message：本地保存的个人留言 -->
+    <section class="section section--paper" id="message" aria-labelledby="messageTitle">
+      <div class="wrap message-grid">
+        <div class="message-copy reveal">
+          <p class="kicker"><span class="kicker-num">10</span>A NOTE TO TOMORROW</p>
+          <h2 id="messageTitle" class="display">留一句话，<br>给<span>未来的声音。</span></h2>
+          <p class="lede">写一句就好，不用押韵。它只存在你这台设备的浏览器里。换台电脑，就听不到了。</p>
+          <button class="inspire-btn" id="inspirationButton" type="button"><span>给我一点灵感</span><b aria-hidden="true">✳</b></button>
+          <p class="inspire-out" id="inspirationOutput" aria-live="polite">“凌晨三点，耳机里那句还没唱完。”</p>
+        </div>
+
+        <form class="note-card reveal" id="noteForm" data-delay="100">
+          <div class="note-head">
+            <span class="mono">PERSONAL NOTE / 001</span>
+            <span class="note-status"><i aria-hidden="true"></i>LOCAL ONLY</span>
+          </div>
           <label class="sr-only" for="personalNote">写给未来的一句话</label>
-          <textarea id="personalNote" maxlength="160" placeholder="写下一句你想留下的话……" rows="4"></textarea>
-          <div class="note-card-footer"><span id="noteCount" class="mono">0 / 160</span><button class="save-note" type="submit">保存这句话 <span aria-hidden="true">↗</span></button></div>
-          <div class="saved-note" id="savedNote" role="status" aria-live="polite" hidden>
+          <textarea id="personalNote" maxlength="160" placeholder="比如：谢谢你替我把那句唱完。" rows="4"></textarea>
+          <div class="note-foot">
+            <span id="noteCount" class="mono">0 / 160</span>
+            <button class="btn btn-primary btn-sm" type="submit">保存这句话</button>
+          </div>
+          <div class="saved" id="savedNote" role="status" aria-live="polite" hidden>
             <span class="saved-label mono">SAVED ON THIS DEVICE</span>
             <p id="savedNoteText"></p>
-            <button type="button" id="clearNote" class="clear-note">清除本地留言</button>
+            <button type="button" id="clearNote" class="clear-btn">清除本地留言</button>
           </div>
-          <p class="privacy-note">留言只保存在当前浏览器，不会发送到服务器。清除浏览器数据后，留言可能随之消失。</p>
+          <p class="privacy">留言只保存在当前浏览器，不会发送到服务器。清除浏览器数据后，它也会消失——像一份没存过的草稿。</p>
         </form>
       </div>
     </section>
@@ -382,20 +876,51 @@
     <!-- Footer：说明与官方资料入口 -->
     <footer class="site-footer">
       <div class="wrap">
-        <div class="footer-main">
-          <div class="footer-identity"><a href="#top">初音未来<span>.shop</span></a><p>ここに、音がある。<br>在这里，声音有形状。</p></div>
-          <div class="footer-links-group"><span class="mono">OFFICIAL REFERENCES</span><a href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">角色资料 / PIAPRO</a><a href="https://piapro.net/" target="_blank" rel="noopener noreferrer">Piapro Portal</a><a href="https://piapro.jp/license/character_guideline" target="_blank" rel="noopener noreferrer">角色利用指南</a><a href="https://www.crypton.co.jp/" target="_blank" rel="noopener noreferrer">Crypton Future Media</a></div>
-          <div class="footer-links-group"><span class="mono">EXPLORE</span><a href="#history">时间刻度</a><a href="#creation">创作的形状</a><a href="#lab">声场实验室</a><a href="#message">写给未来</a></div>
-          <div class="footer-index mono">01<span> / CV</span></div>
+        <div class="footer-top">
+          <div class="footer-brand">
+            <a href="#top">初音未来<span>.shop</span></a>
+            <p>ここに、音がある。<br>在这里，声音有形状。</p>
+            <p class="footer-said">域名带 .shop，<br>但这里没有购物车。</p>
+          </div>
+          <nav class="footer-col" aria-label="官方资料">
+            <span class="mono">OFFICIAL REFERENCES</span>
+            <a href="https://piapro.net/pages/character/" target="_blank" rel="noopener noreferrer">角色资料 / PIAPRO <i aria-hidden="true">↗</i></a>
+            <a href="https://piapro.net/" target="_blank" rel="noopener noreferrer">Piapro Portal <i aria-hidden="true">↗</i></a>
+            <a href="https://piapro.jp/license/character_guideline" target="_blank" rel="noopener noreferrer">角色利用指南 <i aria-hidden="true">↗</i></a>
+            <a href="https://www.crypton.co.jp/" target="_blank" rel="noopener noreferrer">Crypton Future Media <i aria-hidden="true">↗</i></a>
+          </nav>
+          <nav class="footer-col" aria-label="站内导航">
+            <span class="mono">EXPLORE</span>
+            <a href="#about">序章</a>
+            <a href="#history">时间刻度</a>
+            <a href="#songs">十二首歌</a>
+            <a href="#creation">创作的形状</a>
+            <a href="#people">把声音接过去的人</a>
+            <a href="#lab">声场实验室</a>
+            <a href="#glossary">词条</a>
+            <a href="#boundary">这里不卖东西</a>
+            <a href="#message">写给未来</a>
+          </nav>
+          <div class="footer-index mono" aria-hidden="true">01<span> / CV</span></div>
         </div>
         <div class="footer-bottom">
           <p>本页面为个人制作的非官方粉丝主题网页，不代表 Crypton Future Media 或其他权利方。页面中的文字与图形为本站原创表达；角色名称及相关权利归各自权利人所有。</p>
-          <span class="mono">© <span id="year"></span> — SOUND GOES ON.</span>
+          <a class="backtop" href="#top">BACK TO THE BEGINNING <span aria-hidden="true">↑</span></a>
         </div>
-        <a class="back-top" href="#top">BACK TO THE BEGINNING <span aria-hidden="true">↑</span></a>
+        <div class="footer-legal">
+          <span class="mono">© <span id="year"></span> — SOUND GOES ON.</span>
+          <div class="appearance" role="group" aria-label="外观主题">
+            <span class="appearance-label mono" aria-hidden="true">外观</span>
+            <button type="button" data-theme-set="system" aria-pressed="true">跟随系统</button>
+            <button type="button" data-theme-set="light" aria-pressed="false">浅色</button>
+            <button type="button" data-theme-set="dark" aria-pressed="false">深色</button>
+          </div>
+          <span class="mono">非官方 · 非商业 · 不卖任何东西</span>
+        </div>
       </div>
     </footer>
   </main>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

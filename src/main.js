@@ -3,27 +3,29 @@
 
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const $ = (selector, parent = document) => parent.querySelector(selector);
-  const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(selector));
+  const $ = (sel, parent = document) => parent.querySelector(sel);
+  const $$ = (sel, parent = document) => Array.from(parent.querySelectorAll(sel));
 
-  /* 当前年份 */
+  /* ---------------------------------------------------------- 年份 */
   const year = $('#year');
   if (year) year.textContent = String(new Date().getFullYear());
 
-  /* 顶部阅读进度与导航状态 */
+  /* ------------------------------------------------ 顶栏、进度与导航态 */
   const header = $('.site-header');
   const progress = $('#readingProgress');
   const navLinks = $$('.main-nav a');
   const sections = navLinks.map(link => $(link.getAttribute('href'))).filter(Boolean);
-  let scrollTicking = false;
+  let ticking = false;
+
   function updateScrollUI() {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (header) header.classList.toggle('scrolled', scrollTop > 24);
-    if (progress) progress.style.width = (maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0) + '%';
+    const top = window.scrollY || document.documentElement.scrollTop;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    if (header) header.classList.toggle('is-scrolled', top > 8);
+    if (progress) progress.style.width = (max > 0 ? Math.min(1, top / max) * 100 : 0) + '%';
+
     let current = '';
     sections.forEach(section => {
-      if (section.getBoundingClientRect().top <= window.innerHeight * .42) current = '#' + section.id;
+      if (section.getBoundingClientRect().top <= window.innerHeight * 0.4) current = '#' + section.id;
     });
     navLinks.forEach(link => {
       const active = link.getAttribute('href') === current;
@@ -31,193 +33,368 @@
       if (active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
-    scrollTicking = false;
+    ticking = false;
   }
   window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      window.requestAnimationFrame(updateScrollUI);
-      scrollTicking = true;
-    }
+    if (!ticking) { ticking = true; window.requestAnimationFrame(updateScrollUI); }
   }, { passive: true });
   updateScrollUI();
 
-  /* 手机导航 */
+  /* ---------------------------------------------------------- 手机导航 */
   const menuToggle = $('#menuToggle');
   const mainNav = $('#mainNav');
   function closeMenu() {
     if (!menuToggle || !mainNav) return;
     menuToggle.setAttribute('aria-expanded', 'false');
     menuToggle.setAttribute('aria-label', '打开导航');
-    mainNav.classList.remove('open');
+    mainNav.classList.remove('is-open');
   }
   if (menuToggle && mainNav) {
     menuToggle.addEventListener('click', () => {
       const open = menuToggle.getAttribute('aria-expanded') !== 'true';
       menuToggle.setAttribute('aria-expanded', String(open));
       menuToggle.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
-      mainNav.classList.toggle('open', open);
+      mainNav.classList.toggle('is-open', open);
     });
     navLinks.forEach(link => link.addEventListener('click', closeMenu));
     document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-    window.addEventListener('resize', () => { if (window.innerWidth > 760) closeMenu(); }, { passive: true });
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMenu(); }, { passive: true });
   }
 
-  /* 夜间模式：优先读取本机偏好 */
+  /* ------------------------------------------- 主题：跟随系统 / 手动指定 */
   const themeToggle = $('#themeToggle');
-  let storedTheme = null;
-  try { storedTheme = localStorage.getItem('miku-space-theme'); } catch (_) { /* 私密浏览模式可能禁用存储 */ }
-  if (storedTheme === 'dark' || storedTheme === 'light') root.setAttribute('data-theme', storedTheme);
-  function syncThemeButton() {
-    const dark = root.getAttribute('data-theme') === 'dark';
-    if (themeToggle) {
-      themeToggle.setAttribute('aria-pressed', String(dark));
-      themeToggle.setAttribute('aria-label', dark ? '切换日间模式' : '切换夜间模式');
-    }
-    const metaTheme = $('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', dark ? '#0b1b1b' : '#f5fbfa');
+  const metaTheme = $('#metaThemeColor');
+  const themeChoiceButtons = $$('[data-theme-set]');
+  const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  const THEME_KEY = 'miku-space-theme';
+  const THEME_NAMES = { system: '跟随系统', light: '浅色', dark: '深色' };
+  const THEME_COLORS = { light: '#f7f8f7', dark: '#0b1211' };
+
+  function storedTheme() {
+    try {
+      const value = localStorage.getItem(THEME_KEY);
+      return value === 'light' || value === 'dark' ? value : 'system';
+    } catch (_) { return 'system'; /* 私密模式可能禁用存储 */ }
   }
-  syncThemeButton();
-  if (themeToggle) themeToggle.addEventListener('click', () => {
-    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem('miku-space-theme', next); } catch (_) { /* 不影响主题切换 */ }
-    syncThemeButton();
+  function themeState() {
+    return root.getAttribute('data-theme-state') || 'system';
+  }
+  function effectiveTheme(state) {
+    if (state !== 'system') return state;
+    return darkScheme.matches ? 'dark' : 'light';
+  }
+  let themeFadeTimer = 0;
+  function fadeTheme() {
+    if (reduceMotion) return;
+    root.classList.add('theme-fade');
+    window.clearTimeout(themeFadeTimer);
+    themeFadeTimer = window.setTimeout(() => root.classList.remove('theme-fade'), 420);
+  }
+  function applyTheme(state, options) {
+    const opts = options || {};
+    const appearance = effectiveTheme(state);
+    const dark = appearance === 'dark';
+
+    root.setAttribute('data-theme-state', state);
+    root.setAttribute('data-theme', appearance);
+    if (metaTheme) metaTheme.setAttribute('content', THEME_COLORS[appearance]);
+
+    if (themeToggle) {
+      const next = dark ? '浅色' : '深色';
+      const where = state === 'system'
+        ? `跟随系统（当前${THEME_NAMES[appearance]}）`
+        : `当前${THEME_NAMES[state]}`;
+      const label = `${where}，点击切换为${next}`;
+      themeToggle.setAttribute('aria-pressed', String(dark));
+      themeToggle.setAttribute('aria-label', label);
+      themeToggle.setAttribute('title', label);
+    }
+    themeChoiceButtons.forEach(button => {
+      const active = button.getAttribute('data-theme-set') === state;
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('is-active', active);
+    });
+
+    if (opts.persist) {
+      try {
+        if (state === 'system') localStorage.removeItem(THEME_KEY);
+        else localStorage.setItem(THEME_KEY, state);
+      } catch (_) { /* 存储不可用时，本次会话内仍然生效 */ }
+    }
+    if (opts.animate) fadeTheme();
+  }
+
+  applyTheme(storedTheme());
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const dark = effectiveTheme(themeState()) === 'dark';
+      applyTheme(dark ? 'light' : 'dark', { persist: true, animate: true });
+    });
+  }
+  themeChoiceButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const next = button.getAttribute('data-theme-set');
+      if (next === themeState()) return;
+      applyTheme(next, { persist: true, animate: true });
+      if (next === 'system') showToast(`已跟随系统 · 当前${THEME_NAMES[effectiveTheme('system')]}`);
+    });
   });
 
-  /* 滚动显现：不支持 IntersectionObserver 时不隐藏内容 */
+  /* 系统或浏览器主题变化时实时跟随，但用户手动指定过就不再打扰 */
+  const onSchemeChange = () => {
+    if (themeState() === 'system') applyTheme('system', { animate: true });
+  };
+  if (typeof darkScheme.addEventListener === 'function') darkScheme.addEventListener('change', onSchemeChange);
+  else if (typeof darkScheme.addListener === 'function') darkScheme.addListener(onSchemeChange); /* 旧版 Safari */
+
+  /* 同一浏览器的多个标签页之间保持一致 */
+  window.addEventListener('storage', event => {
+    if (event.key === THEME_KEY || event.key === null) applyTheme(storedTheme(), { animate: true });
+  });
+
+  /* --------------------------------------------------------- 滚动显现 */
   const revealItems = $$('.reveal');
   if ('IntersectionObserver' in window && !reduceMotion) {
-    const observer = new IntersectionObserver(entries => {
+    const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         const delay = Number(entry.target.dataset.delay || 0);
         entry.target.style.transitionDelay = delay + 'ms';
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
       });
-    }, { threshold: .12, rootMargin: '0px 0px -4% 0px' });
-    revealItems.forEach(item => observer.observe(item));
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    revealItems.forEach(item => io.observe(item));
+    /* 兜底：任何情况下都不让内容停留在不可见状态 */
+    window.addEventListener('load', () => {
+      window.setTimeout(() => revealItems.forEach(item => item.classList.add('is-visible')), 1600);
+    });
   } else {
-    revealItems.forEach(item => item.classList.add('visible'));
+    revealItems.forEach(item => item.classList.add('is-visible'));
   }
 
-  /* 首屏粒子：只在首屏绘制，暂停后台标签页，移动端减少数量 */
-  (function initParticles() {
-    const canvas = $('#heroParticles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return;
-    let width = 0, height = 0, dpr = 1, particles = [], raf = 0, resizeTimer = 0, initialized = false;
-    const sprites = [];
-    function makeSprite(color) {
-      const sprite = document.createElement('canvas');
-      sprite.width = sprite.height = 40;
-      const g = sprite.getContext('2d');
-      const gradient = g.createRadialGradient(20, 20, 0, 20, 20, 20);
-      gradient.addColorStop(0, `rgba(${color},.78)`);
-      gradient.addColorStop(.32, `rgba(${color},.22)`);
-      gradient.addColorStop(1, `rgba(${color},0)`);
-      g.fillStyle = gradient;
-      g.fillRect(0, 0, 40, 40);
-      return sprite;
+  /* ------------------------------------------------ 首屏"声音圆盘"均衡器 */
+  (function buildEq() {
+    const eq = $('#heroEq');
+    if (!eq) return;
+    const count = window.innerWidth < 620 ? 15 : 21;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const bar = document.createElement('i');
+      const u = count > 1 ? i / (count - 1) : 0.5;
+      const envelope = Math.pow(Math.sin(Math.PI * u), 0.5);
+      const height = 12 + envelope * (56 + Math.random() * 118);
+      bar.style.setProperty('--h', height.toFixed(0) + 'px');
+      bar.style.setProperty('--dur', (2.1 + Math.random() * 1.9).toFixed(2) + 's');
+      bar.style.setProperty('--d', (Math.random() * -3).toFixed(2) + 's');
+      frag.appendChild(bar);
     }
-    sprites.push(makeSprite('57,197,187'), makeSprite('244,184,202'));
-    function makeParticle() {
-      const mobile = window.innerWidth < 700;
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: (mobile ? 2 : 2.7) + Math.random() * (mobile ? 3 : 5),
-        speed: .07 + Math.random() * .18,
-        alpha: .2 + Math.random() * .42,
-        phase: Math.random() * Math.PI * 2,
-        sway: .2 + Math.random() * .5,
-        sprite: Math.random() < .14 ? sprites[1] : sprites[0]
-      };
+    eq.appendChild(frag);
+  })();
+
+  /* ------------------------------------------------------ 时间线横向轨 */
+  (function initRail() {
+    const rails = $$('.rail[data-rail-panel]');
+    if (!rails.length) return;
+    const fill = $('#railFill');
+    const buttons = $$('.rail-btn');
+    const tabs = $$('[data-rail-tab]');
+    const note = $('#railPanelNote');
+    const PANEL_NOTES = { versions: 'SOFTWARE / 2007 — 2026', live: 'STAGE / 2009 — 2020' };
+    let active = rails.find(rail => !rail.hidden) || rails[0];
+
+    function ratioOf(rail) {
+      const max = rail.scrollWidth - rail.clientWidth;
+      return { max, ratio: max > 0 ? rail.scrollLeft / max : 0 };
     }
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      /* 移动端约为桌面端的一半，减少绘制与合成成本。 */
-      const count = window.innerWidth < 700 ? 21 : 42;
-      particles = Array.from({ length: count }, makeParticle);
-    }
-    function draw(time) {
-      if (document.hidden) return;
-      ctx.clearRect(0, 0, width, height);
-      const t = time * .001;
-      particles.forEach(p => {
-        p.y -= p.speed;
-        if (p.y < -22) { p.y = height + 18; p.x = Math.random() * width; }
-        const x = p.x + Math.sin(t * .34 + p.phase) * p.sway * 12;
-        ctx.globalAlpha = p.alpha;
-        ctx.drawImage(p.sprite, x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+    function render() {
+      if (!active) return;
+      const { max, ratio } = ratioOf(active);
+      active.classList.toggle('is-scrollable', max > 1);
+      if (fill) fill.style.width = Math.max(6, ratio * 100).toFixed(2) + '%';
+      buttons.forEach(btn => {
+        const dir = Number(btn.dataset.rail);
+        btn.disabled = dir < 0 ? active.scrollLeft <= 2 : active.scrollLeft >= max - 2;
       });
-      ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(draw);
     }
-    function drawStatic() {
-      ctx.clearRect(0, 0, width, height);
-      particles.forEach(p => {
-        ctx.globalAlpha = p.alpha * .72;
-        ctx.drawImage(p.sprite, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+    function step(rail, dir) {
+      const first = rail.querySelector('.t-card');
+      const cardW = first ? first.getBoundingClientRect().width : 300;
+      const gap = parseFloat(getComputedStyle(rail).columnGap || '18') || 18;
+      rail.scrollBy({ left: dir * (cardW + gap), behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    rails.forEach(rail => {
+      let drag = null;
+      let swallowUntil = 0; // 刚拖过就吞掉紧随其后的那次点击
+
+      rail.addEventListener('scroll', () => { if (rail === active) render(); }, { passive: true });
+      rail.addEventListener('keydown', event => {
+        if (event.key === 'ArrowRight') { event.preventDefault(); step(rail, 1); }
+        if (event.key === 'ArrowLeft') { event.preventDefault(); step(rail, -1); }
       });
-      ctx.globalAlpha = 1;
+
+      /* 按住即可横向拖动。触屏交给系统原生滚动，这里只接管鼠标与触控笔。 */
+      rail.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch' || event.button !== 0) return;
+        if (rail.scrollWidth <= rail.clientWidth) return;
+        drag = {
+          id: event.pointerId,
+          startX: event.clientX,
+          startScroll: rail.scrollLeft,
+          moved: 0,
+          captured: false
+        };
+      });
+
+      rail.addEventListener('pointermove', event => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const dx = event.clientX - drag.startX;
+        drag.moved = Math.max(drag.moved, Math.abs(dx));
+        if (drag.moved <= 3) return;
+
+        if (!drag.captured) {
+          // 确认是拖动而不是点击后才接管指针，避免吃掉卡片上的点击
+          drag.captured = true;
+          rail.classList.add('is-dragging');
+          rail.style.scrollBehavior = 'auto';
+          try { rail.setPointerCapture(drag.id); } catch (err) {}
+          // 按下瞬间浏览器可能已经开始选字，拖动时清掉
+          const selection = window.getSelection && window.getSelection();
+          if (selection && selection.rangeCount) selection.removeAllRanges();
+        }
+        event.preventDefault();
+        rail.scrollLeft = drag.startScroll - dx;
+      });
+
+      function endDrag(event) {
+        if (!drag || (event && event.pointerId !== drag.id)) return;
+        const dragged = drag.moved > 3;
+        if (drag.captured) {
+          try { rail.releasePointerCapture(drag.id); } catch (err) {}
+          rail.classList.remove('is-dragging');
+          rail.style.scrollBehavior = '';
+        }
+        drag = null;
+        if (!dragged) return;
+        // 拖动结束后吸附回最近一张卡；顺带屏蔽掉这次误触的点击
+        swallowUntil = Date.now() + 260;
+      }
+      rail.addEventListener('pointerup', endDrag);
+      rail.addEventListener('pointercancel', endDrag);
+      rail.addEventListener('click', event => {
+        if (Date.now() > swallowUntil) return;
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+      rail.addEventListener('dragstart', event => event.preventDefault());
+    });
+
+    buttons.forEach(btn => btn.addEventListener('click', () => {
+      if (active) step(active, Number(btn.dataset.rail));
+    }));
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const next = rails.find(rail => rail.dataset.railPanel === tab.dataset.railTab);
+        if (!next || next === active) return;
+        tabs.forEach(item => {
+          const on = item === tab;
+          item.classList.toggle('is-active', on);
+          item.setAttribute('aria-pressed', String(on));
+        });
+        rails.forEach(rail => { rail.hidden = rail !== next; });
+        active = next;
+        next.scrollLeft = 0;
+        if (note) note.textContent = PANEL_NOTES[next.dataset.railPanel] || '';
+        window.requestAnimationFrame(render);
+      });
+    });
+
+    window.addEventListener('resize', render, { passive: true });
+    render();
+  })();
+
+  /* ------------------------------------------- 筛选：作品 / 人 / 词条 */
+  (function initFilters() {
+    function setup(config) {
+      const buttons = $$(config.buttonSelector);
+      const items = $$(config.itemSelector);
+      const counter = $(config.counterSelector);
+      if (!buttons.length || !items.length) return;
+      const total = items.length;
+
+      function apply(value, silent) {
+        let shown = 0;
+        items.forEach(item => {
+          const match = value === 'all' || item.getAttribute(config.itemKey) === value;
+          item.classList.toggle('is-hidden', !match);
+          if (match) {
+            shown += 1;
+            // 筛选后重新出现的项要直接到位；初次渲染交给滚动显现，别抢跑
+            if (!silent) item.classList.add('is-visible');
+          }
+        });
+        buttons.forEach(btn => {
+          const on = btn.getAttribute(config.buttonKey) === value;
+          btn.classList.toggle('is-active', on);
+          btn.setAttribute('aria-pressed', String(on));
+        });
+        if (counter) counter.textContent = shown + ' / ' + total;
+      }
+
+      buttons.forEach(btn => btn.addEventListener('click', () => {
+        apply(btn.getAttribute(config.buttonKey));
+      }));
+      apply('all', true);
     }
-    function initialize() {
-      if (initialized) return;
-      initialized = true;
-      resize();
-      if (reduceMotion) drawStatic();
-      else if (!document.hidden) raf = requestAnimationFrame(draw);
-    }
-    /* 首屏先完成文字与弧线绘制，粒子在浏览器空闲时再初始化。 */
-    if ('requestIdleCallback' in window) window.requestIdleCallback(initialize, { timeout: 900 });
-    else window.setTimeout(initialize, 360);
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => {
-        if (!initialized) return;
-        resize();
-        if (reduceMotion) drawStatic();
-      }, 180);
-    }, { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      cancelAnimationFrame(raf);
-      if (!initialized || document.hidden) return;
-      if (reduceMotion) drawStatic();
-      else raf = requestAnimationFrame(draw);
+
+    setup({ buttonSelector: '[data-era]', buttonKey: 'data-era', itemSelector: '.song[data-era]', itemKey: 'data-era', counterSelector: '#songCount' });
+    setup({ buttonSelector: '[data-role-filter]', buttonKey: 'data-role-filter', itemSelector: '.person[data-role]', itemKey: 'data-role', counterSelector: '#peopleCount' });
+    setup({ buttonSelector: '[data-gloss]', buttonKey: 'data-gloss', itemSelector: '.gloss[data-gloss]', itemKey: 'data-gloss', counterSelector: '#glossCount' });
+  })();
+
+  /* ------------------------------------------ 词条：全部展开 / 收起 */
+  (function initGlossToggle() {
+    const toggle = $('#glossToggle');
+    const items = $$('.gloss');
+    if (!toggle || !items.length) return;
+    toggle.addEventListener('click', () => {
+      const expand = toggle.getAttribute('aria-expanded') !== 'true';
+      items.forEach(item => { item.open = expand; });
+      toggle.setAttribute('aria-expanded', String(expand));
+      toggle.textContent = expand ? '全部收起' : '全部展开';
     });
   })();
 
-  /* 声场实验室：Canvas 生成波形、同心声纹与频谱图 */
+  /* -------------------------------------------- 声场实验室（Canvas 声纹） */
   (function initVisualizer() {
     const canvas = $('#soundCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
     const amount = $('#waveAmount');
     const density = $('#waveDensity');
     const amountValue = $('#waveAmountValue');
     const densityValue = $('#waveDensityValue');
     const readout = $('#visualReadout');
     const modeLabel = $('#visualModeLabel');
-    const modeButtons = $$('.mode-button');
+    const modeButtons = $$('[data-mode]');
+
     const W = 900, H = 520;
-    let mode = 'wave', amplitude = 58, detail = 48, frame = 0, raf = 0;
-    const labels = { wave: 'SINE / FLOW FIELD', ring: 'RING / RESONANCE', spectrum: 'SPECTRUM / FREQUENCY' };
-    function setupCanvas() {
+    let mode = 'wave', amplitude = 58, detail = 48, raf = 0;
+    const labels = { wave: '波形 / FLOW FIELD', ring: '环状 / RESONANCE', spectrum: '频谱 / FREQUENCY' };
+
+    function setup() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     function grid() {
-      ctx.strokeStyle = 'rgba(116,190,180,.09)';
+      ctx.strokeStyle = 'rgba(126, 190, 180, .08)';
       ctx.lineWidth = 1;
       for (let x = 0; x <= W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
       for (let y = 0; y <= H; y += 52) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
@@ -229,76 +406,82 @@
         ctx.beginPath();
         for (let x = 0; x <= W; x += 3) {
           const u = x / W;
-          const env = Math.pow(Math.sin(Math.PI * u), .7);
-          const y = H / 2 + Math.sin(u * (3.5 + detail * .06) * Math.PI * 2 + t * .75 + layer * .42) * amp * env
-            + Math.sin(u * 17 + t * .3 + layer) * (amplitude * .12) * env;
+          const env = Math.pow(Math.sin(Math.PI * u), 0.7);
+          const y = H / 2
+            + Math.sin(u * (3.5 + detail * 0.06) * Math.PI * 2 + t * 0.75 + layer * 0.42) * amp * env
+            + Math.sin(u * 17 + t * 0.3 + layer) * (amplitude * 0.12) * env;
           if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
         }
-        ctx.strokeStyle = layer === 0 ? 'rgba(112,225,214,.92)' : `rgba(57,197,187,${.18 + .42 * (1 - layer / lines)})`;
+        ctx.strokeStyle = layer === 0 ? 'rgba(122, 232, 221, .92)' : 'rgba(79, 210, 199, ' + (0.16 + 0.4 * (1 - layer / lines)) + ')';
         ctx.lineWidth = layer === 0 ? 2.2 : 1;
         ctx.stroke();
       }
-      const x = W * (.5 + .43 * Math.sin(t * .28));
-      ctx.strokeStyle = 'rgba(244,184,202,.46)';
-      ctx.setLineDash([4, 9]); ctx.beginPath(); ctx.moveTo(x, 100); ctx.lineTo(x, 420); ctx.stroke(); ctx.setLineDash([]);
+      const x = W * (0.5 + 0.43 * Math.sin(t * 0.28));
+      ctx.strokeStyle = 'rgba(240, 160, 182, .4)';
+      ctx.setLineDash([4, 9]);
+      ctx.beginPath(); ctx.moveTo(x, 100); ctx.lineTo(x, 420); ctx.stroke();
+      ctx.setLineDash([]);
     }
     function rings(t) {
       const cx = W / 2, cy = H / 2, count = Math.max(5, Math.round(detail / 5));
       for (let i = count; i >= 1; i--) {
-        const radius = 24 + i * (7 + amplitude * .18) + Math.sin(t * .45 + i * .28) * (3 + amplitude * .035);
+        const radius = 24 + i * (7 + amplitude * 0.18) + Math.sin(t * 0.45 + i * 0.28) * (3 + amplitude * 0.035);
         ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = i % 3 === 0 ? 'rgba(244,184,202,.65)' : `rgba(92,220,207,${.12 + .56 * (1 - i / (count + 1))})`;
-        ctx.lineWidth = i % 4 === 0 ? 2 : 1; ctx.stroke();
+        ctx.strokeStyle = i % 3 === 0 ? 'rgba(240, 160, 182, .55)' : 'rgba(100, 226, 213, ' + (0.1 + 0.56 * (1 - i / (count + 1))) + ')';
+        ctx.lineWidth = i % 4 === 0 ? 2 : 1;
+        ctx.stroke();
       }
       for (let i = 0; i < 36; i++) {
-        const angle = i / 36 * Math.PI * 2 + t * .05;
-        const r = 48 + Math.sin(i * 1.9 + t) * amplitude * .65 + detail * .4;
+        const angle = (i / 36) * Math.PI * 2 + t * 0.05;
+        const r = 48 + Math.sin(i * 1.9 + t) * amplitude * 0.65 + detail * 0.4;
         const x = cx + Math.cos(angle) * r, y = cy + Math.sin(angle) * r;
-        ctx.fillStyle = i % 5 === 0 ? '#f4b8ca' : '#72d9ce';
-        ctx.globalAlpha = .25 + .7 * (i % 4) / 4;
+        ctx.fillStyle = i % 5 === 0 ? '#f0a0b6' : '#6fd9ce';
+        ctx.globalAlpha = 0.25 + (0.7 * (i % 4)) / 4;
         ctx.beginPath(); ctx.arc(x, y, i % 4 === 0 ? 3 : 1.7, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
-      ctx.beginPath(); ctx.arc(cx, cy, 5 + amplitude * .07, 0, Math.PI * 2); ctx.fillStyle = 'rgba(104,224,212,.9)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 5 + amplitude * 0.07, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(122, 232, 221, .9)'; ctx.fill();
     }
     function spectrum(t) {
-      const bars = Math.max(18, Math.round(detail * .78));
+      const bars = Math.max(18, Math.round(detail * 0.78));
       const gap = 5, barWidth = (W - 100 - gap * (bars - 1)) / bars;
       for (let i = 0; i < bars; i++) {
         const u = i / Math.max(1, bars - 1);
-        const v = Math.abs(Math.sin(i * .63 + t * .4) * .48 + Math.cos(i * .19 - t * .22) * .34 + Math.sin(i * .11) * .18);
-        const envelope = .32 + .68 * Math.pow(Math.sin(Math.PI * u), .55);
+        const v = Math.abs(Math.sin(i * 0.63 + t * 0.4) * 0.48 + Math.cos(i * 0.19 - t * 0.22) * 0.34 + Math.sin(i * 0.11) * 0.18);
+        const envelope = 0.32 + 0.68 * Math.pow(Math.sin(Math.PI * u), 0.55);
         const h = (18 + v * (90 + amplitude * 2.25)) * envelope;
         const x = 50 + i * (barWidth + gap), y = (H - h) / 2;
-        const gradient = ctx.createLinearGradient(0, y, 0, y + h);
-        gradient.addColorStop(0, 'rgba(244,184,202,.88)');
-        gradient.addColorStop(.48, 'rgba(108,222,210,.88)');
-        gradient.addColorStop(1, 'rgba(57,197,187,.28)');
-        ctx.fillStyle = gradient;
+        const grad = ctx.createLinearGradient(0, y, 0, y + h);
+        grad.addColorStop(0, 'rgba(240, 160, 182, .85)');
+        grad.addColorStop(0.48, 'rgba(111, 217, 206, .9)');
+        grad.addColorStop(1, 'rgba(57, 197, 187, .25)');
+        ctx.fillStyle = grad;
         ctx.beginPath();
         const r = Math.min(5, barWidth / 2);
         if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, barWidth, h, r);
         else ctx.rect(x, y, barWidth, h);
         ctx.fill();
       }
-      ctx.strokeStyle = 'rgba(116,190,180,.24)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(126, 190, 180, .2)';
+      ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(30, H / 2); ctx.lineTo(W - 30, H / 2); ctx.stroke();
     }
     function draw(time = 0) {
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#0c2422'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#08120f';
+      ctx.fillRect(0, 0, W, H);
       grid();
-      const t = reduceMotion ? 0 : time * .001;
+      const t = reduceMotion ? 0 : time * 0.001;
       if (mode === 'wave') wave(t);
       else if (mode === 'ring') rings(t);
       else spectrum(t);
-      frame++;
       if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(draw);
     }
     function updateLabels() {
       if (amountValue) amountValue.value = String(amplitude);
       if (densityValue) densityValue.value = String(detail);
-      if (readout) readout.textContent = `A ${String(amplitude).padStart(3, '0')} · D ${String(detail).padStart(3, '0')}`;
+      if (readout) readout.textContent = 'A ' + String(amplitude).padStart(3, '0') + ' · D ' + String(detail).padStart(3, '0');
       if (modeLabel) modeLabel.textContent = labels[mode];
       modeButtons.forEach(button => {
         const active = button.dataset.mode === mode;
@@ -307,9 +490,9 @@
       });
     }
     function renderOnce() { cancelAnimationFrame(raf); draw(performance.now()); }
-    setupCanvas(); updateLabels();
-    if (reduceMotion) draw(0);
-    else raf = requestAnimationFrame(draw);
+
+    setup(); updateLabels();
+    raf = requestAnimationFrame(draw);
     if (amount) amount.addEventListener('input', () => { amplitude = Number(amount.value); updateLabels(); if (reduceMotion) renderOnce(); });
     if (density) density.addEventListener('input', () => { detail = Number(density.value); updateLabels(); if (reduceMotion) renderOnce(); });
     modeButtons.forEach(button => button.addEventListener('click', () => {
@@ -331,76 +514,78 @@
     });
   })();
 
-  /* 灵感短句：均为本站原创 */
-  const inspirationLines = [
-    '如果一段旋律有颜色，它会停在哪个季节？',
-    '把今天没有说出口的话，交给明天的声音。',
-    '想象一座只在耳机里出现的城市。',
-    '让一个微小的念头，慢慢长成一片星海。',
-    '如果沉默也有频率，你会听见什么？',
-    '为尚未发生的相遇，留下一小段前奏。'
+  /* ------------------------------------------------------- 灵感短句 */
+  const lines = [
+    '凌晨三点，耳机里那一句还没唱完。',
+    '你洗澡时哼的那个调子，其实已经是开头了。',
+    '副歌前那三秒，你倒回去听了十几遍。',
+    '写给还没见过的那个人：第一句从这里开始。',
+    '循环到第四十七次，你确认自己记住了。',
+    '这段声音穿过多少人，才到你的耳机里。'
   ];
-  const inspirationButton = $('#inspirationButton');
-  const inspirationOutput = $('#inspirationOutput');
-  let lastInspiration = -1;
-  if (inspirationButton && inspirationOutput) inspirationButton.addEventListener('click', () => {
-    let next = Math.floor(Math.random() * inspirationLines.length);
-    if (inspirationLines.length > 1 && next === lastInspiration) next = (next + 1) % inspirationLines.length;
-    lastInspiration = next;
-    inspirationOutput.textContent = '“' + inspirationLines[next] + '”';
+  const inspireBtn = $('#inspirationButton');
+  const inspireOut = $('#inspirationOutput');
+  let lastLine = -1;
+  if (inspireBtn && inspireOut) inspireBtn.addEventListener('click', () => {
+    let next = Math.floor(Math.random() * lines.length);
+    if (lines.length > 1 && next === lastLine) next = (next + 1) % lines.length;
+    lastLine = next;
+    inspireOut.textContent = '“' + lines[next] + '”';
   });
 
-  /* 留言只保存在当前设备，不发送网络请求 */
+  /* ------------------------------------------------- 留言（仅本地保存） */
   const noteForm = $('#noteForm');
   const noteInput = $('#personalNote');
   const noteCount = $('#noteCount');
   const savedNote = $('#savedNote');
-  const savedNoteText = $('#savedNoteText');
+  const savedText = $('#savedNoteText');
   const clearNote = $('#clearNote');
   const toast = $('#toast');
   let toastTimer = 0;
+
   function showToast(message) {
     if (!toast) return;
     toast.textContent = message;
-    toast.classList.add('show');
+    toast.classList.add('is-visible');
     window.clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => toast.classList.remove('show'), 2600);
+    toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
   }
-  function renderSavedNote(value) {
-    if (!savedNote || !savedNoteText) return;
+  function renderSaved(value) {
+    if (!savedNote || !savedText) return;
     if (value) {
-      savedNoteText.textContent = value;
+      savedText.textContent = value;
       savedNote.hidden = false;
     } else {
       savedNote.hidden = true;
-      savedNoteText.textContent = '';
+      savedText.textContent = '';
     }
   }
   function updateCount() {
-    if (noteCount && noteInput) noteCount.textContent = `${noteInput.value.length} / 160`;
+    if (noteCount && noteInput) noteCount.textContent = noteInput.value.length + ' / 160';
   }
-  let existingNote = '';
-  try { existingNote = localStorage.getItem('miku-space-note') || ''; } catch (_) { /* 存储不可用时仍允许临时编辑 */ }
-  renderSavedNote(existingNote);
+  let existing = '';
+  try { existing = localStorage.getItem('miku-space-note') || ''; } catch (_) { /* 允许临时编辑 */ }
+  renderSaved(existing);
   if (noteInput) noteInput.addEventListener('input', updateCount);
   updateCount();
-  if (noteForm && noteInput) noteForm.addEventListener('submit', event => {
+
+  if (noteForm && noteInput) noteForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const value = noteInput.value.trim();
     if (!value) { showToast('先写下一句话，再保存吧。'); noteInput.focus(); return; }
     try {
       localStorage.setItem('miku-space-note', value);
-      renderSavedNote(value);
+      renderSaved(value);
       noteInput.value = '';
       updateCount();
-      showToast('这句话已保存在当前浏览器。');
+      showToast('存好了。只在这台设备上。');
     } catch (_) {
       showToast('当前浏览器不允许本地保存，请复制并自行留存。');
     }
   });
   if (clearNote) clearNote.addEventListener('click', () => {
     try { localStorage.removeItem('miku-space-note'); } catch (_) { /* 忽略 */ }
-    renderSavedNote('');
+    renderSaved('');
     showToast('本地留言已清除。');
   });
 })();
