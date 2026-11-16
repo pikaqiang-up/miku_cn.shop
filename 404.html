@@ -7,15 +7,15 @@
 <meta name="theme-color" content="#0b1211" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex,follow">
-<meta name="description" content="这个地址上没有声音。首页还在，十二首歌、十六个词条也还在。">
-<title>这里没有声音 · 404 · 初音未来.shop</title>
+<meta name="description" content="你访问的页面不存在，或地址已经发生变化。可以返回首页，继续浏览初音未来的作品与相关介绍。">
+<title>页面不存在 · 404 · 初音未来.shop</title>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="初音未来.shop">
-<meta property="og:title" content="这里没有声音 · 404">
-<meta property="og:description" content="地址上什么都没有。首页还在，十二首歌与十六个词条也还在。">
+<meta property="og:title" content="页面不存在 · 404">
+<meta property="og:description" content="这个页面暂时无法访问。返回首页，继续浏览时间线、代表作品和词条内容。">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="这里没有声音 · 404">
-<meta name="twitter:description" content="地址上什么都没有。首页还在。">
+<meta name="twitter:title" content="页面不存在 · 404">
+<meta name="twitter:description" content="这个页面暂时无法访问。返回首页，继续浏览时间线、代表作品和词条内容。">
 <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" data-asset="favicon.svg">
 <script>
   /* 和主站同一套判断：本地有手动选择就照做，没有则跟随系统（浏览器）。
@@ -140,6 +140,8 @@
     line-height: 1.55; letter-spacing: -.01em;
     color: var(--ink);
   }
+  .sub em { display: block; margin-top: 6px; }
+  .jp-cn { display: block; margin-top: 3px; font-size: 11px; font-style: normal; letter-spacing: .06em; opacity: .8; }
   .sub {
     margin: 14px 0 0; max-width: 30em;
     font-size: 15px; line-height: 1.95; color: var(--ink-3);
@@ -303,20 +305,20 @@
     <div class="copy">
       <p class="kicker"><b>NO SIGNAL</b><i></i>ERR_404</p>
       <h1>404</h1>
-      <p class="lede">这里没有声音。</p>
-      <p class="sub">地址里大概有一个字写错了，也可能这一小节本来就没被录进来。<em>如果你是顺着站内某个链接走到这里，那是我们漏了一处。</em></p>
-      <p class="missed" id="missed" hidden>你打开的是 <b></b></p>
-      <p class="hint" id="hint" hidden>这个地址像是在找 <b id="hintName"></b>，<a id="hintLink" href="./index.html" data-home>它在这边</a></p>
+      <p class="lede">这个页面不存在。</p>
+      <p class="sub">请检查地址是否输入正确，或返回首页重新选择栏目。<em>如果你是通过本站链接来到这里，可能是页面地址发生了变化，或链接暂时无法访问。</em></p>
+      <p class="missed" id="missed" hidden>当前地址 <b></b></p>
+      <p class="hint" id="hint" hidden>你可能正在查找 <b id="hintName"></b>——<a id="hintLink" href="./index.html" data-home>前往</a></p>
       <div class="actions">
-        <a class="btn" href="./index.html" data-home>回到首页
+        <a class="btn" href="./index.html" data-home>返回首页
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4"/></svg>
         </a>
         <nav class="mini" aria-label="站内其他位置">
           <a href="./index.html#about" data-home="#about">序章</a><span aria-hidden="true">·</span>
-          <a href="./index.html#history" data-home="#history">时间</a><span aria-hidden="true">·</span>
-          <a href="./index.html#songs" data-home="#songs">作品</a><span aria-hidden="true">·</span>
-          <a href="./index.html#creation" data-home="#creation">创作</a><span aria-hidden="true">·</span>
-          <a href="./index.html#lab" data-home="#lab">声场</a><span aria-hidden="true">·</span>
+          <a href="./index.html#history" data-home="#history">时间线</a><span aria-hidden="true">·</span>
+          <a href="./index.html#songs" data-home="#songs">代表作品</a><span aria-hidden="true">·</span>
+          <a href="./index.html#creation" data-home="#creation">创作文化</a><span aria-hidden="true">·</span>
+          <a href="./index.html#lab" data-home="#lab">声场实验室</a><span aria-hidden="true">·</span>
           <a href="./index.html#glossary" data-home="#glossary">词条</a><span aria-hidden="true">·</span>
           <a href="./index.html#message" data-home="#message">留言</a>
         </nav>
@@ -337,8 +339,8 @@
     </div>
 
     <p class="foot">
-      <span class="jp">ここに、音はない。</span>
-      <span>非官方 · 非商业 · 不卖任何东西</span>
+      <span class="jp">ここに、音はない。<i class="jp-cn">这里暂时没有声音。</i></span>
+      <span>非官方 · 非商业 · 不提供商品销售</span>
       <span class="code">初音未来.shop · ERR_NO_SIGNAL 404</span>
     </p>
   </main>
@@ -359,14 +361,14 @@
     /* 地址里常常留着用户真正想找的东西：/songs、/glossary、/live……
        能认出来就直接指路，比让人再从七个入口里挑一遍有用。 */
     var ROUTES = [
-      { keys: ['song', 'songs', 'music', 'track', 'tracks', 'album', 'albums', 'playlist', 'discography', 'songlist', 'lyrics'], zh: ['歌', '曲'], name: '十二首歌', hash: '#songs' },
-      { keys: ['glossary', 'gloss', 'word', 'words', 'term', 'terms', 'dictionary', 'dict', 'lexicon'], zh: ['词'], name: '十六个词条', hash: '#glossary' },
-      { keys: ['people', 'person', 'creator', 'creators', 'producer', 'producers', 'author', 'authors', 'artist', 'artists'], zh: [], name: '把声音接过去的人', hash: '#people' },
-      { keys: ['live', 'stage', 'concert', 'concerts', 'tour', 'festival', 'setlist'], zh: ['现场', '演出', '演唱会'], name: '现场的那些年', hash: '#history' },
-      { keys: ['history', 'timeline', 'version', 'versions', 'software'], zh: ['时间', '版本'], name: '时间线', hash: '#history' },
-      { keys: ['lab', 'wave', 'waves', 'sound', 'visual', 'visualizer', 'visualiser', 'voiceprint'], zh: ['声场'], name: '声场实验室', hash: '#lab' },
-      { keys: ['about', 'story', 'intro', 'concept'], zh: ['序章'], name: '序章', hash: '#about' },
-      { keys: ['message', 'note', 'notes', 'guestbook', 'letter', 'wall'], zh: ['留言'], name: '写给未来的一句话', hash: '#message' }
+      { keys: ['song', 'songs', 'music', 'track', 'tracks', 'album', 'albums', 'playlist', 'discography', 'songlist', 'lyrics'], zh: ['歌', '曲'], name: '代表作品', action: '前往作品列表', hash: '#songs' },
+      { keys: ['glossary', 'gloss', 'word', 'words', 'term', 'terms', 'dictionary', 'dict', 'lexicon'], zh: ['词'], name: '词条', action: '查看词汇解释', hash: '#glossary' },
+      { keys: ['people', 'person', 'creator', 'creators', 'producer', 'producers', 'author', 'authors', 'artist', 'artists'], zh: [], name: '创作者', action: '查看创作者介绍', hash: '#people' },
+      { keys: ['live', 'stage', 'concert', 'concerts', 'tour', 'festival', 'setlist'], zh: ['现场', '演出', '演唱会'], name: '现场演出', action: '查看时间线', hash: '#history' },
+      { keys: ['history', 'timeline', 'version', 'versions', 'software'], zh: ['时间', '版本'], name: '时间线', action: '查看发展历程', hash: '#history' },
+      { keys: ['lab', 'wave', 'waves', 'sound', 'visual', 'visualizer', 'visualiser', 'voiceprint'], zh: ['声场'], name: '声场实验室', action: '进入互动区域', hash: '#lab' },
+      { keys: ['about', 'story', 'intro', 'concept'], zh: ['序章'], name: '序章', action: '了解初音未来', hash: '#about' },
+      { keys: ['message', 'note', 'notes', 'guestbook', 'letter', 'wall'], zh: ['留言'], name: '留言', action: '写下一段留言', hash: '#message' }
     ];
 
     function guess(raw) {
@@ -394,6 +396,7 @@
       var link = document.querySelector('#hintLink');
       if (name && link) {
         name.textContent = '「' + hit.name + '」';
+        link.textContent = hit.action;
         link.setAttribute('data-home', hit.hash);
         link.href = homeHref(hit.hash);
         document.querySelector('#hint').hidden = false;

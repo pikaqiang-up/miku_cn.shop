@@ -46,14 +46,14 @@
   function closeMenu() {
     if (!menuToggle || !mainNav) return;
     menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', '打开导航');
+    menuToggle.setAttribute('aria-label', '打开导航菜单');
     mainNav.classList.remove('is-open');
   }
   if (menuToggle && mainNav) {
     menuToggle.addEventListener('click', () => {
       const open = menuToggle.getAttribute('aria-expanded') !== 'true';
       menuToggle.setAttribute('aria-expanded', String(open));
-      menuToggle.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+      menuToggle.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
       mainNav.classList.toggle('is-open', open);
     });
     navLinks.forEach(link => link.addEventListener('click', closeMenu));
@@ -100,7 +100,7 @@
     if (metaTheme) metaTheme.setAttribute('content', THEME_COLORS[appearance]);
 
     if (themeToggle) {
-      const next = dark ? '浅色' : '深色';
+      const next = dark ? '浅色模式' : '深色模式';
       const where = state === 'system'
         ? `跟随系统（当前${THEME_NAMES[appearance]}）`
         : `当前${THEME_NAMES[state]}`;
@@ -137,7 +137,7 @@
       const next = button.getAttribute('data-theme-set');
       if (next === themeState()) return;
       applyTheme(next, { persist: true, animate: true });
-      if (next === 'system') showToast(`已跟随系统 · 当前${THEME_NAMES[effectiveTheme('system')]}`);
+      if (next === 'system') showToast(`已切换为跟随系统 · 当前为${THEME_NAMES[effectiveTheme('system')]}模式`);
     });
   });
 
@@ -203,6 +203,7 @@
     const note = $('#railPanelNote');
     const PANEL_NOTES = { versions: 'SOFTWARE / 2007 — 2026', live: 'STAGE / 2009 — 2020' };
     let active = rails.find(rail => !rail.hidden) || rails[0];
+    let railSwapTimer = 0;
 
     function ratioOf(rail) {
       const max = rail.scrollWidth - rail.clientWidth;
@@ -304,11 +305,24 @@
           item.classList.toggle('is-active', on);
           item.setAttribute('aria-pressed', String(on));
         });
-        rails.forEach(rail => { rail.hidden = rail !== next; });
-        active = next;
-        next.scrollLeft = 0;
-        if (note) note.textContent = PANEL_NOTES[next.dataset.railPanel] || '';
-        window.requestAnimationFrame(render);
+        const swap = () => {
+          rails.forEach(rail => { rail.hidden = rail !== next; });
+          active = next;
+          next.scrollLeft = 0;
+          if (note) note.textContent = PANEL_NOTES[next.dataset.railPanel] || '';
+          window.requestAnimationFrame(render);
+        };
+        // 两条轨道互换时也走一次淡出淡入，接住高度的突变
+        const wrap = next.closest('.rail-wrap');
+        if (reduceMotion || !wrap) { swap(); return; }
+        window.clearTimeout(railSwapTimer);
+        wrap.classList.add('is-swapping');
+        railSwapTimer = window.setTimeout(() => {
+          swap();
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => wrap.classList.remove('is-swapping'));
+          });
+        }, 130);
       });
     });
 
@@ -324,8 +338,10 @@
       const counter = $(config.counterSelector);
       if (!buttons.length || !items.length) return;
       const total = items.length;
+      const scope = items[0].parentElement;
+      let swapTimer = 0;
 
-      function apply(value, silent) {
+      function commit(value, silent) {
         let shown = 0;
         items.forEach(item => {
           const match = value === 'all' || item.getAttribute(config.itemKey) === value;
@@ -342,6 +358,23 @@
           btn.setAttribute('aria-pressed', String(on));
         });
         if (counter) counter.textContent = shown + ' / ' + total;
+        const bar = buttons[0] && buttons[0].closest('.chips');
+        if (bar) bar.dispatchEvent(new CustomEvent('chips:update'));
+        // 筛过之后可见条目变了，"全部展开 / 收起"的文案要跟着重算
+        document.dispatchEvent(new CustomEvent('content:filtered'));
+      }
+
+      // 先让整块淡出，换完再淡入：直接 display:none 会"啪"地一下跳掉
+      function apply(value, silent) {
+        if (silent || reduceMotion || !scope) { commit(value, silent); return; }
+        window.clearTimeout(swapTimer);
+        scope.classList.add('is-swapping');
+        swapTimer = window.setTimeout(() => {
+          commit(value, false);
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => scope.classList.remove('is-swapping'));
+          });
+        }, 140);
       }
 
       buttons.forEach(btn => btn.addEventListener('click', () => {
@@ -350,19 +383,75 @@
       apply('all', true);
     }
 
-    setup({ buttonSelector: '[data-era]', buttonKey: 'data-era', itemSelector: '.song[data-era]', itemKey: 'data-era', counterSelector: '#songCount' });
-    setup({ buttonSelector: '[data-role-filter]', buttonKey: 'data-role-filter', itemSelector: '.person[data-role]', itemKey: 'data-role', counterSelector: '#peopleCount' });
-    setup({ buttonSelector: '[data-gloss]', buttonKey: 'data-gloss', itemSelector: '.gloss[data-gloss]', itemKey: 'data-gloss', counterSelector: '#glossCount' });
+    // 只认筛选条上的胶囊。作品、词条卡自己也带 data-era / data-gloss，
+    // 用裸属性选择器会把卡片一起当成按钮，点开一条词条就顺手筛了一次。
+    setup({ buttonSelector: '.chip[data-era]', buttonKey: 'data-era', itemSelector: '.song[data-era]', itemKey: 'data-era', counterSelector: '#songCount' });
+    setup({ buttonSelector: '.chip[data-role-filter]', buttonKey: 'data-role-filter', itemSelector: '.person[data-role]', itemKey: 'data-role', counterSelector: '#peopleCount' });
+    setup({ buttonSelector: '.chip[data-gloss]', buttonKey: 'data-gloss', itemSelector: '.gloss[data-gloss]', itemKey: 'data-gloss', counterSelector: '#glossCount' });
   })();
 
-  /* ------------------------------------------ 词条：全部展开 / 收起 */
+  /* ---------------------------------------- 筛选条：横滑时两端渐隐 */
+  (function initChipFade() {
+    const groups = $$('.chips');
+    if (!groups.length) return;
+
+    function update(el) {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 1) { el.removeAttribute('data-fade'); return; }
+      const atStart = el.scrollLeft <= 2;
+      const atEnd = el.scrollLeft >= max - 2;
+      el.setAttribute('data-fade', atStart && atEnd ? 'none' : (atStart ? 'end' : (atEnd ? 'start' : 'both')));
+    }
+    function updateAll() { groups.forEach(update); }
+
+    groups.forEach(el => {
+      update(el);
+      el.addEventListener('scroll', () => update(el), { passive: true });
+      el.addEventListener('chips:update', () => update(el));
+    });
+    window.addEventListener('resize', updateAll, { passive: true });
+    window.addEventListener('load', updateAll);
+  })();
+
+  /* ------------------------------------------ 词条：单条展开 / 全部展开 */
   (function initGlossToggle() {
     const toggle = $('#glossToggle');
     const items = $$('.gloss');
     if (!toggle || !items.length) return;
+
+    function setItem(item, open) {
+      item.classList.toggle('is-open', open);
+      const trigger = item.querySelector('.gloss-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', String(open));
+    }
+    function isOpen(item) { return item.classList.contains('is-open'); }
+    function visibleItems() { return items.filter(item => !item.classList.contains('is-hidden')); }
+    function syncMaster() {
+      const list = visibleItems();
+      const allOpen = list.length > 0 && list.every(isOpen);
+      toggle.setAttribute('aria-expanded', String(allOpen));
+      toggle.textContent = allOpen ? '全部收起' : '全部展开';
+    }
+
+    items.forEach(item => {
+      const trigger = item.querySelector('.gloss-trigger');
+      if (!trigger) return;
+      trigger.addEventListener('click', () => {
+        setItem(item, !isOpen(item));
+        syncMaster();
+      });
+    });
+    document.addEventListener('content:filtered', syncMaster);
+    syncMaster();
+
     toggle.addEventListener('click', () => {
-      const expand = toggle.getAttribute('aria-expanded') !== 'true';
-      items.forEach(item => { item.open = expand; });
+      const list = visibleItems();
+      const expand = !(list.length > 0 && list.every(isOpen));
+      // 展开时按行依次打开，像翻一页词典；收起就直接收，不拖时间
+      list.forEach((item, index) => {
+        if (!expand || reduceMotion) { setItem(item, expand); return; }
+        window.setTimeout(() => setItem(item, true), Math.min(index * 32, 300));
+      });
       toggle.setAttribute('aria-expanded', String(expand));
       toggle.textContent = expand ? '全部收起' : '全部展开';
     });
@@ -496,17 +585,40 @@
     if (amount) amount.addEventListener('input', () => { amplitude = Number(amount.value); updateLabels(); if (reduceMotion) renderOnce(); });
     if (density) density.addEventListener('input', () => { detail = Number(density.value); updateLabels(); if (reduceMotion) renderOnce(); });
     modeButtons.forEach(button => button.addEventListener('click', () => {
+      if (button.dataset.mode === mode) return;
       mode = button.dataset.mode;
       updateLabels();
+      // 画布内容换掉的那一瞬淡一下，避免图形硬切
+      if (!reduceMotion) {
+        canvas.classList.add('is-morph');
+        window.setTimeout(() => canvas.classList.remove('is-morph'), 170);
+      }
       if (reduceMotion) renderOnce();
     }));
     const reset = $('#resetLab');
     if (reset) reset.addEventListener('click', () => {
-      amplitude = 58; detail = 48; mode = 'wave';
-      if (amount) amount.value = String(amplitude);
-      if (density) density.value = String(detail);
-      updateLabels();
-      if (reduceMotion) renderOnce();
+      const fromA = amplitude, fromD = detail;
+      mode = 'wave';
+      if (reduceMotion) {
+        amplitude = 58; detail = 48;
+        if (amount) amount.value = String(amplitude);
+        if (density) density.value = String(detail);
+        updateLabels();
+        renderOnce();
+        return;
+      }
+      // 数值滚回默认值，滑块和读数一起走，不是"啪"地跳回去
+      const start = performance.now(), dur = 320;
+      (function roll(now) {
+        const p = Math.min(1, (now - start) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        amplitude = Math.round(fromA + (58 - fromA) * e);
+        detail = Math.round(fromD + (48 - fromD) * e);
+        if (amount) amount.value = String(amplitude);
+        if (density) density.value = String(detail);
+        updateLabels();
+        if (p < 1) window.requestAnimationFrame(roll);
+      })(start);
     });
     document.addEventListener('visibilitychange', () => {
       cancelAnimationFrame(raf);
@@ -516,12 +628,12 @@
 
   /* ------------------------------------------------------- 灵感短句 */
   const lines = [
-    '凌晨三点，耳机里那一句还没唱完。',
-    '你洗澡时哼的那个调子，其实已经是开头了。',
-    '副歌前那三秒，你倒回去听了十几遍。',
-    '写给还没见过的那个人：第一句从这里开始。',
-    '循环到第四十七次，你确认自己记住了。',
-    '这段声音穿过多少人，才到你的耳机里。'
+    '有一段旋律，你到现在还记得。',
+    '某个熟悉的声音，也许会成为新作品的起点。',
+    '副歌前的几秒，值得再听一遍。',
+    '把脑海里的想法记下来，创作可以从这里开始。',
+    '同一首歌听了很多遍，每次仍会注意到新的细节。',
+    '一段声音经过不同的人，也会产生不同的表达。'
   ];
   const inspireBtn = $('#inspirationButton');
   const inspireOut = $('#inspirationOutput');
@@ -530,7 +642,14 @@
     let next = Math.floor(Math.random() * lines.length);
     if (lines.length > 1 && next === lastLine) next = (next + 1) % lines.length;
     lastLine = next;
-    inspireOut.textContent = '“' + lines[next] + '”';
+    const text = '“' + lines[next] + '”';
+    if (reduceMotion) { inspireOut.textContent = text; return; }
+    // 换句之前先淡下去，读起来像换了一张卡片，而不是文字被替换
+    inspireOut.classList.add('is-fading');
+    window.setTimeout(() => {
+      inspireOut.textContent = text;
+      inspireOut.classList.remove('is-fading');
+    }, 180);
   });
 
   /* ------------------------------------------------- 留言（仅本地保存） */
@@ -550,14 +669,24 @@
     window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
   }
-  function renderSaved(value) {
+  let savedTimer = 0;
+  function renderSaved(value, instant) {
     if (!savedNote || !savedText) return;
+    window.clearTimeout(savedTimer);
     if (value) {
       savedText.textContent = value;
       savedNote.hidden = false;
+      savedNote.classList.remove('is-show');
+      if (instant || reduceMotion) { savedNote.classList.add('is-show'); return; }
+      // 先让它以透明状态进入布局，下一帧再淡进来
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => savedNote.classList.add('is-show'));
+      });
     } else {
-      savedNote.hidden = true;
-      savedText.textContent = '';
+      savedNote.classList.remove('is-show');
+      const hide = () => { savedNote.hidden = true; savedText.textContent = ''; };
+      if (reduceMotion) hide();
+      else savedTimer = window.setTimeout(hide, 240);
     }
   }
   function updateCount() {
@@ -565,22 +694,22 @@
   }
   let existing = '';
   try { existing = localStorage.getItem('miku-space-note') || ''; } catch (_) { /* 允许临时编辑 */ }
-  renderSaved(existing);
+  renderSaved(existing, true);
   if (noteInput) noteInput.addEventListener('input', updateCount);
   updateCount();
 
   if (noteForm && noteInput) noteForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const value = noteInput.value.trim();
-    if (!value) { showToast('先写下一句话，再保存吧。'); noteInput.focus(); return; }
+    if (!value) { showToast('请先写下一句话，再保存。'); noteInput.focus(); return; }
     try {
       localStorage.setItem('miku-space-note', value);
       renderSaved(value);
       noteInput.value = '';
       updateCount();
-      showToast('存好了。只在这台设备上。');
+      showToast('留言已保存在当前设备。');
     } catch (_) {
-      showToast('当前浏览器不允许本地保存，请复制并自行留存。');
+      showToast('当前浏览器不允许本地存储。请复制留言内容并自行保存。');
     }
   });
   if (clearNote) clearNote.addEventListener('click', () => {
