@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f7f8f7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1211" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8fbfa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#091311" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex,follow">
 <meta name="description" content="你访问的页面不存在，或地址已经发生变化。可以返回首页，继续浏览初音未来的作品与相关介绍。">
@@ -49,14 +49,14 @@
       if (state === 'system') {
         if (metas.length === 1) {
           metas[0].parentNode.removeChild(metas[0]);
-          addMeta('#f7f8f7', '(prefers-color-scheme: light)');
-          addMeta('#0b1211', '(prefers-color-scheme: dark)');
+          addMeta('#f8fbfa', '(prefers-color-scheme: light)');
+          addMeta('#091311', '(prefers-color-scheme: dark)');
         }
       } else if (metas.length === 1 && !metas[0].getAttribute('media')) {
-        metas[0].setAttribute('content', dark ? '#0b1211' : '#f7f8f7');
+        metas[0].setAttribute('content', dark ? '#091311' : '#f8fbfa');
       } else {
         for (var i = metas.length - 1; i >= 0; i--) metas[i].parentNode.removeChild(metas[i]);
-        addMeta(dark ? '#0b1211' : '#f7f8f7', null);
+        addMeta(dark ? '#091311' : '#f8fbfa', null);
       }
     }
 
@@ -78,12 +78,12 @@
 <style>
   :root {
     color-scheme: light;
-    --paper: #f7f8f7;
+    --paper: #f8fbfa;
     --ink: #0f1614;
     --ink-2: #3d4744;
     --ink-3: #5e6a66;
-    --accent-ink: #0c6e67;
-    --pink: #c94f74;
+    --accent-ink: #087b73;
+    --pink: #d75d83;
     --line: rgba(15, 34, 30, .12);
     --line-2: rgba(15, 34, 30, .24);
     --tint: rgba(12, 110, 103, .06);
@@ -241,8 +241,8 @@
 
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --paper: #0b1211; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
-    --accent-ink: #6ed9ce; --pink: #f090ab;
+    --paper: #091311; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
+    --accent-ink: #79e5db; --pink: #f090ab;
     --line: rgba(213, 235, 228, .14); --line-2: rgba(213, 235, 228, .3);
     --tint: rgba(110, 217, 206, .12); --meta: #a9b7b2;
   }
@@ -252,8 +252,8 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --paper: #0b1211; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
-      --accent-ink: #6ed9ce; --pink: #f090ab;
+      --paper: #091311; --ink: #f1f5f3; --ink-2: #c2ccc8; --ink-3: #9aa8a3;
+      --accent-ink: #79e5db; --pink: #f090ab;
       --line: rgba(213, 235, 228, .14); --line-2: rgba(213, 235, 228, .3);
       --tint: rgba(110, 217, 206, .12); --meta: #a9b7b2;
     }
@@ -299,8 +299,65 @@
     * { transition: none !important; animation: none !important; }
   }
 </style>
+
+<style>
+  /* 404 的微调样式内联保留，保证深层路径触发服务器 404 时也能正常显示。 */
+  body.page-404 {
+    background-image:
+      radial-gradient(ellipse at 82% 24%, color-mix(in srgb, var(--accent-ink) 12%, transparent), transparent 38%),
+      radial-gradient(ellipse at 12% 85%, color-mix(in srgb, var(--pink) 5%, transparent), transparent 34%);
+  }
+  body.page-404 main {
+    position: relative; isolation: isolate;
+    width: min(1160px, 100%);
+    padding: clamp(26px, 4.6vw, 58px);
+    border: 1px solid var(--line); border-radius: clamp(24px, 3vw, 36px);
+    background: color-mix(in srgb, var(--paper) 72%, transparent);
+    box-shadow: 0 18px 42px rgba(18, 63, 57, .10), 0 3px 10px rgba(18, 63, 57, .045);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  }
+  body.page-404 main::before {
+    content: ""; position: absolute; z-index: -1; inset: 0; border-radius: inherit;
+    background-image: linear-gradient(to right, color-mix(in srgb, var(--accent-ink) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--accent-ink) 8%, transparent) 1px, transparent 1px);
+    background-size: 34px 34px; opacity: .18;
+    -webkit-mask-image: linear-gradient(120deg, #000, transparent 68%);
+    mask-image: linear-gradient(120deg, #000, transparent 68%);
+    pointer-events: none;
+  }
+  body.page-404 .copy { position: relative; z-index: 1; }
+  body.page-404 h1 {
+    background: linear-gradient(135deg, var(--ink), color-mix(in srgb, var(--accent-ink) 64%, var(--ink)) 72%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: -.075em;
+  }
+  body.page-404 .kicker b { color: var(--accent-ink); }
+  body.page-404 .stage { filter: drop-shadow(0 20px 40px color-mix(in srgb, var(--accent-ink) 12%, transparent)); }
+  body.page-404 .wave rect { fill: var(--accent-ink); }
+  body.page-404 a.btn {
+    min-height: 50px;
+    background: linear-gradient(112deg, var(--accent-ink), color-mix(in srgb, var(--accent-ink) 76%, #22bdb2));
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--accent-ink) 20%, transparent);
+  }
+  body.page-404 a.btn:hover { background: var(--accent-ink); box-shadow: 0 14px 28px color-mix(in srgb, var(--accent-ink) 24%, transparent); }
+  body.page-404 .hint { border: 1px solid var(--line); }
+  body.page-404 .foot { padding-top: 20px; }
+  :root[data-theme="dark"] body.page-404 main {
+    background: rgba(15, 29, 26, .72);
+    box-shadow: 0 20px 46px rgba(0,0,0,.28);
+  }
+  :root[data-theme="dark"] body.page-404 h1 { color: transparent; }
+  :root[data-theme="dark"] body.page-404 a.btn { color: #06201d; }
+  @media (max-width: 860px) {
+    body.page-404 main { padding: 26px 22px; }
+  }
+  @media (max-width: 480px) {
+    body.page-404 { padding: 16px; }
+    body.page-404 main { padding: 24px 18px; border-radius: 22px; }
+    body.page-404 h1 { font-size: clamp(82px, 24vw, 116px); }
+  }
+</style>
 </head>
-<body>
+<body class="page-404">
   <main>
     <div class="copy">
       <p class="kicker"><b>NO SIGNAL</b><i></i>ERR_404</p>

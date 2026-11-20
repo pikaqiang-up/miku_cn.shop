@@ -68,7 +68,7 @@
   const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
   const THEME_KEY = 'miku-space-theme';
   const THEME_NAMES = { system: '跟随系统', light: '浅色', dark: '深色' };
-  const THEME_COLORS = { light: '#f7f8f7', dark: '#0b1211' };
+  const THEME_COLORS = { light: '#f8fbfa', dark: '#091311' };
 
   function storedTheme() {
     try {
